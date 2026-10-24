@@ -13,6 +13,8 @@ export interface MessageLog extends ClinicScoped {
   appointmentId: AppointmentId | null;
   prescriptionId: PrescriptionId | null;
   status: DeliveryStatus;
+  /** Id returned by the WhatsApp provider, used to match delivery receipts. */
+  providerMessageId: string | null;
   /** When the scheduler should send it (reminders). */
   scheduledFor: IsoDateTime | null;
   sentAt: IsoDateTime | null;

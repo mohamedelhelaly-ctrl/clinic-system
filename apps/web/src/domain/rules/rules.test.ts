@@ -124,6 +124,7 @@ describe('reminders', () => {
       appointmentId: 'a',
       prescriptionId: null,
       status: 'delivered',
+      providerMessageId: null,
       scheduledFor: null,
       sentAt: null,
       deliveredAt: null,
