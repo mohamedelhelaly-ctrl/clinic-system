@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+prototype
+demo-recording/output
+package-lock.json
