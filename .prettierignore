@@ -4,3 +4,4 @@ coverage
 prototype
 demo-recording/output
 package-lock.json
+apps/web/src/styles/app.css
