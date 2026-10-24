@@ -1,0 +1,36 @@
+/* Demo-only styles. Deleted together with src/demo for production. */
+.demo-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--mut);
+  font-size: 13px;
+  padding-top: 4px;
+}
+.demo-foot.fixed {
+  position: fixed;
+  bottom: 12px;
+  inset-inline: 16px;
+}
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--wn);
+  color: var(--wnt);
+  border: 1px solid var(--wnb);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+@media (max-height: 720px) {
+  .demo-foot.fixed {
+    position: static;
+    margin-top: 16px;
+  }
+}

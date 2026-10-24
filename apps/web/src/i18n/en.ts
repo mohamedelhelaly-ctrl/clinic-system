@@ -237,6 +237,7 @@ export const en = {
   visitsStat: 'Visits',
   packageSales: 'Package sales',
   packageSale: 'Package: {patient}',
+  egpParen: '(EGP)',
   egp: 'EGP',
   totalPrice: 'Total price',
   numVisits: 'Number of visits',

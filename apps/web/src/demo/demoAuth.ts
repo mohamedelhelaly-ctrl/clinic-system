@@ -13,10 +13,12 @@ const KEY = 'clinic-demo:session';
 /** Password-free sign-in by role. Replaced by real authentication in production. */
 export class DemoAuthService implements AuthService {
   private session: Session | null;
+  private last: Role = 'receptionist';
   private listeners = new Set<() => void>();
 
   constructor(initialRole: Role | null) {
     this.session = initialRole ? DEMO_USERS[initialRole] : this.load();
+    if (this.session) this.last = this.session.role;
     this.save();
   }
 
@@ -27,6 +29,11 @@ export class DemoAuthService implements AuthService {
     return () => this.listeners.delete(listener);
   };
 
+  /** Role pre-selected on the login screen: the last one used, else receptionist. */
+  lastRole(): Role {
+    return this.last;
+  }
+
   signInAs(role: Role): void {
     this.set(DEMO_USERS[role]);
   }
@@ -36,6 +43,7 @@ export class DemoAuthService implements AuthService {
   }
 
   private set(session: Session | null): void {
+    if (session) this.last = session.role;
     this.session = session;
     this.save();
     this.listeners.forEach((l) => l());

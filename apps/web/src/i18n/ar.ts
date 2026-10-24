@@ -227,6 +227,7 @@ export const ar: Messages = {
   visitsStat: 'عدد الزيارات',
   packageSales: 'مبيعات الباقات',
   packageSale: 'باقة: {patient}',
+  egpParen: '(EGP)',
   egp: 'ج.م',
   totalPrice: 'السعر الإجمالي',
   numVisits: 'عدد الزيارات',
