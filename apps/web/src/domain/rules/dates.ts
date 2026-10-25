@@ -67,6 +67,11 @@ export function timeOf(minutes: number): ClockTime {
   return `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`;
 }
 
+/** Same wall-clock time `months` later. */
+export function addMonthsAt(value: IsoDateTime, months: number): IsoDateTime {
+  return dateTime(addMonths(datePart(value), months), timePart(value));
+}
+
 /** Shift a local date-time by a number of hours. */
 export function addHours(value: IsoDateTime, hours: number): IsoDateTime {
   const total = minutesOf(timePart(value)) + Math.round(hours * 60);

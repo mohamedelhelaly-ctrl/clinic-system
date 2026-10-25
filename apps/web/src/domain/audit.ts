@@ -2,7 +2,14 @@ import type { AppointmentId, ClinicScoped, IsoDateTime, LocalizedText, UserId } 
 import type { Role } from './permissions/roles';
 
 export type AuditEntity =
-  'patient' | 'appointment' | 'visit_record' | 'prescription' | 'payment' | 'package' | 'schedule';
+  | 'patient'
+  | 'appointment'
+  | 'visit_record'
+  | 'prescription'
+  | 'payment'
+  | 'package'
+  | 'schedule'
+  | 'clinic';
 
 export type AuditAction =
   | 'visit_record.edited'
@@ -12,7 +19,8 @@ export type AuditAction =
   | 'payment.gate_overridden'
   | 'package.created'
   | 'package.adjusted'
-  | 'schedule.blocked';
+  | 'schedule.blocked'
+  | 'clinic.edited';
 
 /** Values used to render the human summary; text values may carry an Arabic form. */
 export type AuditParams = Record<string, string | number | LocalizedText>;
@@ -33,6 +41,7 @@ export interface AuditLog extends ClinicScoped {
 
 export type AppointmentEventKind =
   | 'booked'
+  | 'moved_to_call_list'
   | 'arrived'
   | 'confirmed_manually'
   | 'call_confirmed'

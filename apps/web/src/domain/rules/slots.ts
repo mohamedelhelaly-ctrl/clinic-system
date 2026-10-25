@@ -32,6 +32,19 @@ export interface SlotContext {
   now: Moment;
 }
 
+/** A non-cancelled appointment already holds this doctor's slot (spec AM-5). */
+export function isSlotTaken(
+  appointments: readonly Appointment[],
+  doctorId: DoctorId,
+  date: IsoDate,
+  time: ClockTime,
+): boolean {
+  return appointments.some(
+    (a) =>
+      a.doctorId === doctorId && a.date === date && a.time === time && a.status !== 'cancelled',
+  );
+}
+
 /**
  * A slot cannot be booked when the doctor is off, the time has passed, or a
  * non-cancelled appointment already holds it (spec AM-3, AM-5).
@@ -48,8 +61,5 @@ export function isSlotUnavailable(
     return true;
   }
   if (date < now.date || (date === now.date && time <= now.time)) return true;
-  return appointments.some(
-    (a) =>
-      a.doctorId === doctorId && a.date === date && a.time === time && a.status !== 'cancelled',
-  );
+  return isSlotTaken(appointments, doctorId, date, time);
 }

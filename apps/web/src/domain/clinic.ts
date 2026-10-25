@@ -5,6 +5,8 @@ export interface ClinicSettings {
   reminderLeadHours: number;
   /** Hours before the appointment when an unanswered reminder becomes "Needs call". */
   callListCutoffHours: number;
+  /** Minutes after the slot start before the UI suggests marking No show. */
+  noShowGraceMinutes: number;
   /** Optional second reminder closer to the appointment (spec RC-6). */
   secondReminderEnabled: boolean;
   defaultLanguage: Language;

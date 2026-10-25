@@ -50,6 +50,11 @@ export interface Prescription extends ClinicScoped {
   finalizedAt: IsoDateTime | null;
 }
 
+/** The record as a role without clinical access receives it: date and doctor only (spec §2). */
+export function withoutClinicalContent<T extends VisitRecordFields>(record: T): T {
+  return { ...record, complaint: '', diagnosis: '', treatment: '' };
+}
+
 export function hasDrug(item: PrescriptionItem): boolean {
   return item.drug.trim() !== '';
 }

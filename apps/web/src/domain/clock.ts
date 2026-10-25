@@ -5,6 +5,8 @@ export interface Clock {
   today(): IsoDate;
   time(): ClockTime;
   now(): IsoDateTime;
+  /** Clocks that can move (the demo clock) notify listeners when they do. */
+  subscribe?(listener: () => void): () => void;
 }
 
 export interface Moment {
