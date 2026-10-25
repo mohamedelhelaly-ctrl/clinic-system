@@ -10,6 +10,7 @@ import {
 import { DemoAuthService } from './demoAuth';
 import { DemoClock } from './demoClock';
 import { parseDemoParams, stripResetParam } from './params';
+import { installRecordingHooks } from './recordingHooks';
 import { createSeed } from './seed';
 
 export interface DemoEnvironment {
@@ -20,6 +21,8 @@ export interface DemoEnvironment {
   demo: {
     auth: DemoAuthService;
     clock: DemoClock;
+    /** Recording mode (`?clean=1`): demo controls hidden, `window.__demo` installed. */
+    clean: boolean;
     reset(): void;
     /** Moves the demo clock, then lets the simulated scheduler catch up. */
     advance(move: (clock: DemoClock) => void): Promise<void>;
@@ -50,23 +53,20 @@ export function createDemoEnvironment(search = window.location.search): DemoEnvi
   const auth = new DemoAuthService(params.role);
   stripResetParam();
   void repository.demo.runScheduledJobs();
-  return {
-    repository,
+  const demo: DemoEnvironment['demo'] = {
     auth,
     clock,
-    initialLanguage: params.lang,
-    demo: {
-      auth,
-      clock,
-      reset: () => {
-        clock.reset();
-        repository.reset();
-      },
-      advance: async (move) => {
-        move(clock);
-        await repository.demo.runScheduledJobs();
-      },
-      reply: (appointmentId, reply) => repository.demo.simulatePatientReply(appointmentId, reply),
+    clean: params.clean,
+    reset: () => {
+      clock.reset();
+      repository.reset();
     },
+    advance: async (move) => {
+      move(clock);
+      await repository.demo.runScheduledJobs();
+    },
+    reply: (appointmentId, reply) => repository.demo.simulatePatientReply(appointmentId, reply),
   };
+  if (params.clean) installRecordingHooks({ repository, ...demo });
+  return { repository, auth, clock, initialLanguage: params.lang, demo };
 }

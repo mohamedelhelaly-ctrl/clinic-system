@@ -4,6 +4,8 @@ export interface DemoParams {
   role: Role | null;
   lang: Language | null;
   reset: boolean;
+  /** Recording mode: hides demo controls and exposes `window.__demo` to the recording script. */
+  clean: boolean;
 }
 
 const ROLE_ALIASES: Record<string, Role> = {
@@ -15,15 +17,15 @@ const ROLE_ALIASES: Record<string, Role> = {
   adm: 'admin',
 };
 
-/** Reads `?role=receptionist|doctor|admin`, `?lang=en|ar` and `?reset=1`. */
+/** Reads `?role=receptionist|doctor|admin`, `?lang=en|ar`, `?reset=1` and `?clean=1`. */
 export function parseDemoParams(search: string): DemoParams {
   const params = new URLSearchParams(search);
   const role = ROLE_ALIASES[(params.get('role') ?? '').toLowerCase()] ?? null;
   const langParam = (params.get('lang') ?? '').toLowerCase();
   const lang = langParam === 'en' || langParam === 'ar' ? langParam : null;
   const resetParam = params.get('reset');
-  const reset = resetParam !== null && resetParam !== '0' && resetParam !== 'false';
-  return { role, lang, reset };
+  const flag = (value: string | null) => value !== null && value !== '0' && value !== 'false';
+  return { role, lang, reset: flag(resetParam), clean: flag(params.get('clean')) };
 }
 
 /** Removes `reset` from the address bar so a reload does not wipe the demo again. */

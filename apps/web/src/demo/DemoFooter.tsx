@@ -21,6 +21,14 @@ export function DemoFooter({
   const { t, fmt } = useI18n();
   const demo = useDemo();
   const now = useClock().now();
+  // Recording mode keeps only the badge.
+  if (demo.clean) {
+    return (
+      <footer className="demo-foot">
+        <span className="demo-badge">{t('demoBadge')}</span>
+      </footer>
+    );
+  }
   return (
     <footer className={fixed ? 'demo-foot fixed' : 'demo-foot'}>
       <span className="demo-badge">{t('demoBadge')}</span>

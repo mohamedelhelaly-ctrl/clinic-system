@@ -2,6 +2,7 @@ import { useRequiredSession } from '../auth';
 import type { Role } from '../domain';
 import type { MessageKey } from '../i18n';
 import { useI18n } from '../i18n';
+import { useDemo } from './DemoProvider';
 
 export const ROLE_OPTIONS: { role: Role; label: MessageKey }[] = [
   { role: 'receptionist', label: 'rRec' },
@@ -13,6 +14,7 @@ export const ROLE_OPTIONS: { role: Role; label: MessageKey }[] = [
 export function DemoRoleSwitcher({ onChange }: { onChange(role: Role): void }) {
   const { t } = useI18n();
   const session = useRequiredSession();
+  if (useDemo().clean) return null;
   return (
     <label className="demo">
       {t('demoRole')}

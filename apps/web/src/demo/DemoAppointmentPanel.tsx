@@ -25,7 +25,8 @@ export function DemoAppointmentPanel({ appointmentId }: { appointmentId: Appoint
   const data = useClinicData();
   const now = useClock().now();
   const a = data.appointments.find((x) => x.id === appointmentId);
-  if (!a) return null;
+  // Recording mode drives the simulation from the script instead.
+  if (!a || demo.clean) return null;
 
   const reminder = data.messages.find(
     (m) => m.type === 'reminder' && m.appointmentId === appointmentId,
