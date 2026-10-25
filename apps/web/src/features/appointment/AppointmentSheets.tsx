@@ -26,7 +26,9 @@ export function PaymentSheet() {
         {`${text(dir.patient(a.patientId).name)} · ${a.time ?? t('walkinTag')} · ${text(dir.doctor(a.doctorId).name)}`}
       </p>
       <label className="lbl">
-        <span>{t('amount')}</span> {t('egpParen')}
+        <span className="lt">
+          <span>{t('amount')}</span> {t('egpParen')}
+        </span>
         <input
           className="inp"
           inputMode="numeric"

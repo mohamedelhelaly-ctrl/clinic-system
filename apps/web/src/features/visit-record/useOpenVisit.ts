@@ -46,6 +46,7 @@ export function useOpenVisit() {
         treatment: draft?.treatment ?? '',
         rxRows: items.map(toRxRow),
         histOpen: false,
+        editVisitId: null,
       });
     },
     [nav, data],

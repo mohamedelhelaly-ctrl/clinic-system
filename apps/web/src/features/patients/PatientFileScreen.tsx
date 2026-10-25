@@ -6,6 +6,7 @@ import { Alert, Icon, initial, Locked, statusClass, APPOINTMENT_STATUS_UI } from
 import { useClinicData } from '../../data';
 import {
   ageOn,
+  can,
   canSeeClinicalContent,
   isActive,
   percentRemaining,
@@ -24,6 +25,7 @@ export function PatientFileScreen() {
   const today = useClock().today();
   const startBooking = useStartBooking();
   const clinical = canSeeClinicalContent(session.role);
+  const canEditVisits = can(session.role, 'visitRecord.write');
 
   const p = dir.patient(ui.patId ?? 'p3');
   const pkg = primaryPackage(data.packages, p.id);
@@ -146,7 +148,7 @@ export function PatientFileScreen() {
               <button className="doc" key={a.id} onClick={() => nav('appt', { apptId: a.id })}>
                 <span className="time">{`${fmt.dayLabel(a.date)} ${a.time ?? ''}`}</span>
                 <span style={{ flex: 1 }}>{text(dir.doctor(a.doctorId).name)}</span>
-                <span className={`${statusClass(a.status)} badge`}>
+                <span className={statusClass(a.status)}>
                   {t(APPOINTMENT_STATUS_UI[a.status].label)}
                 </span>
               </button>
@@ -160,10 +162,10 @@ export function PatientFileScreen() {
           <div className="tl">
             {history.map((v) => {
               const prescription = data.prescriptions.find((x) => x.visitRecordId === v.id);
-              const revision = data.visitRecordRevisions
+              const revisions = data.visitRecordRevisions
                 .filter((r) => r.visitRecordId === v.id)
-                .at(-1);
-              const editor = revision ? dir.user(revision.editedBy) : undefined;
+                .sort((a, b) => (a.editedAt < b.editedAt ? 1 : -1));
+              const revision = revisions[0];
               return (
                 <div className="tli" key={v.id}>
                   <div className="row sb">
@@ -197,7 +199,7 @@ export function PatientFileScreen() {
                         {revision && (
                           <button
                             className="chip"
-                            style={{ minHeight: 32, fontSize: 13 }}
+                            style={{ minHeight: 44, fontSize: 13 }}
                             onClick={() =>
                               set((s) => ({ edOpen: { ...s.edOpen, [v.id]: !s.edOpen[v.id] } }))
                             }
@@ -205,15 +207,35 @@ export function PatientFileScreen() {
                             {t('edited')}
                           </button>
                         )}
+                        {canEditVisits && (
+                          <button
+                            className="chip"
+                            style={{ minHeight: 44, fontSize: 13 }}
+                            onClick={() =>
+                              nav('visit', {
+                                editVisitId: v.id,
+                                apptId: v.appointmentId,
+                                complaint: v.complaint,
+                                diagnosis: v.diagnosis,
+                                treatment: v.treatment,
+                                histOpen: false,
+                              })
+                            }
+                          >
+                            <Icon name="edit" small />
+                            {t('edit')}
+                          </button>
+                        )}
                       </div>
-                      {revision && ui.edOpen[v.id] && (
-                        <p className="sub">
-                          {t('editedBy', {
-                            name: text(editor?.shortName),
-                            when: revision.editedAt.replace('T', ' '),
-                          })}
-                        </p>
-                      )}
+                      {ui.edOpen[v.id] &&
+                        revisions.map((r) => (
+                          <p className="sub" key={r.editedAt}>
+                            {t('editedBy', {
+                              name: text(dir.user(r.editedBy)?.shortName),
+                              when: r.editedAt.replace('T', ' '),
+                            })}
+                          </p>
+                        ))}
                     </>
                   )}
                 </div>

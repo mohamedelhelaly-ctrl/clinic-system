@@ -4,11 +4,10 @@ import type { AuditLog, LocalizedText, PackageAdjustment } from '../../domain';
 import type { MessageKey } from '../../i18n';
 import { useI18n } from '../../i18n';
 
-/** The prototype shows the short adjustment code in the log text. */
-const ADJUSTMENT_CODE: Record<PackageAdjustment, string> = {
-  add_visit: 'add',
-  remove_visit: 'remove',
-  extend_expiry: 'extend',
+const ADJUSTMENT_LABEL: Record<PackageAdjustment, MessageKey> = {
+  add_visit: 'adjAdd',
+  remove_visit: 'adjRemove',
+  extend_expiry: 'adjExtend',
 };
 
 export function AuditLogScreen() {
@@ -23,8 +22,10 @@ export function AuditLogScreen() {
       if (typeof v === 'object') params[k] = text(v as LocalizedText);
       else if (k === 'price') params[k] = fmt.money(Number(v));
       else if (k === 'date') params[k] = fmt.date(String(v));
-      else if (k === 'adjustment') params[k] = ADJUSTMENT_CODE[v as PackageAdjustment] ?? String(v);
-      else params[k] = String(v);
+      else if (k === 'adjustment') {
+        const label = ADJUSTMENT_LABEL[v as PackageAdjustment];
+        params[k] = label ? t(label) : String(v);
+      } else params[k] = String(v);
     }
     const gender = entry.role === 'admin' ? 'M' : dir.user(entry.userId)?.gender;
     return t(`audit.${entry.action}` as MessageKey, params, { gender });
@@ -42,10 +43,10 @@ export function AuditLogScreen() {
               padding: '12px 0',
               borderBottom: '1px solid var(--ln)',
               flexWrap: 'nowrap',
-              alignItems: 'flex-start',
+              alignItems: 'baseline',
             }}
           >
-            <span className="sub" style={{ minWidth: 96 }}>
+            <span className="sub" style={{ flex: '0 0 132px', fontVariantNumeric: 'tabular-nums' }}>
               {entry.at.replace('T', ' ')}
             </span>
             <span style={{ flex: 1 }}>{describe(entry)}</span>

@@ -79,8 +79,14 @@ export function usePatientHistory(patientId: PatientId): HistoryEntry[] {
       data.visitRecords
         .filter((v) => v.patientId === patientId && v.finalizedAt !== null)
         .sort((a, b) => (a.date < b.date ? 1 : -1))
-        .map((record) => ({ record, doctorName: text(dir.doctor(record.doctorId).name) })),
-    [data.visitRecords, patientId, dir, text],
+        .map((record) => ({
+          record,
+          doctorName: text(dir.doctor(record.doctorId).name),
+          hasPrescription: data.prescriptions.some(
+            (p) => p.visitRecordId === record.id && p.items.length > 0,
+          ),
+        })),
+    [data.visitRecords, data.prescriptions, patientId, dir, text],
   );
 }
 

@@ -2,7 +2,7 @@ import { useClock } from '../../app/ClockProvider';
 import { useActor, useDirectory } from '../../app/hooks';
 import { useUi } from '../../app/uiState';
 import { Alert, Icon, initial } from '../../components';
-import { useClinicData, useRepository } from '../../data';
+import { DomainError, useClinicData, useRepository } from '../../data';
 import { addDays, ageOn, findActivePackage, remainingVisits, reminderPolicy } from '../../domain';
 import { bilingual, useI18n } from '../../i18n';
 import { useSlotPicker } from './useSlots';
@@ -89,14 +89,24 @@ export function BookingScreen() {
 
   const saveBooking = async () => {
     if (!b.patientId || !b.doctorId) return;
-    await repo.bookAppointment(actor, {
-      patientId: b.patientId,
-      doctorId: b.doctorId,
-      date: b.walkIn ? today : addDays(today, b.day),
-      time: b.walkIn ? null : b.slot,
-      reason: ui.reason ? { value: ui.reason } : bilingual('defaultReason'),
-    });
+    try {
+      await repo.bookAppointment(actor, {
+        patientId: b.patientId,
+        doctorId: b.doctorId,
+        date: b.walkIn ? today : addDays(today, b.day),
+        time: b.walkIn ? null : b.slot,
+        reason: ui.reason ? { value: ui.reason } : bilingual('defaultReason'),
+      });
+    } catch (e) {
+      if (e instanceof DomainError && e.code === 'slot_taken') {
+        setBk({ step: 2, slot: null });
+        toast(t('errSlotTaken'));
+        return;
+      }
+      throw e;
+    }
     root('home', {
+      hday: b.walkIn ? 0 : b.day,
       reason: '',
       fDoc: actor.role === 'doctor' ? ui.fDoc : 'all',
       fSt: 'all',
@@ -175,7 +185,9 @@ export function BookingScreen() {
                   />
                 </label>
                 <label className="lbl">
-                  <span>{t('phone')}</span> *
+                  <span className="lt">
+                    <span>{t('phone')}</span> *
+                  </span>
                   <input
                     className="inp"
                     inputMode="tel"
@@ -214,7 +226,9 @@ export function BookingScreen() {
                   </select>
                 </label>
                 <label className="lbl">
-                  <span>{t('address')}</span> <small>{t('optional')}</small>
+                  <span className="lt">
+                    <span>{t('address')}</span> <small>{t('optional')}</small>
+                  </span>
                   <input
                     className="inp"
                     value={ui.rgAddr}
@@ -222,10 +236,12 @@ export function BookingScreen() {
                   />
                 </label>
                 <label className="lbl" style={{ gridColumn: '1/-1' }}>
-                  <span>{t('alerts')}</span>{' '}
-                  <small>
-                    {t('optional')} · {t('alertsHint')}
-                  </small>
+                  <span className="lt">
+                    <span>{t('alerts')}</span>{' '}
+                    <small>
+                      {t('optional')} · {t('alertsHint')}
+                    </small>
+                  </span>
                   <input
                     className="inp"
                     value={ui.rgAlerts}

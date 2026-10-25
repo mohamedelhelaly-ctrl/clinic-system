@@ -6,6 +6,7 @@ import {
   useNow,
   usePatientHistory,
 } from '../../app/hooks';
+import { useAppSlots } from '../../app/slots';
 import { useUi } from '../../app/uiState';
 import { useRequiredSession } from '../../auth';
 import {
@@ -25,12 +26,12 @@ import {
   daysBetween,
   findActivePackage,
   getAppointmentActions,
-  hasSlotPassed,
-  isPreArrival,
+  isNoShowSuggested,
   remainingVisits,
 } from '../../domain';
 import type { MessageKey } from '../../i18n';
 import { useI18n } from '../../i18n';
+import { METHOD_LABEL } from '../payments/usePayments';
 import { useAppointmentLog } from './useAppointmentLog';
 import { useOpenVisit } from '../visit-record/useOpenVisit';
 
@@ -50,7 +51,9 @@ export function AppointmentScreen() {
   const actor = useActor();
   const session = useRequiredSession();
   const now = useNow();
-  const today = useClock().today();
+  const clock = useClock();
+  const today = clock.today();
+  const { appointment: AppointmentExtras } = useAppSlots();
   const channelOf = useConfirmationChannels();
   const openVisit = useOpenVisit();
 
@@ -71,7 +74,7 @@ export function AppointmentScreen() {
     detail = t(CANCEL_TEXT[c.source]!);
     if (c.source === 'clinic' && c.reason)
       detail = t('withReason', { text: detail, reason: c.reason });
-  } else if (isPreArrival(a.status) && hasSlotPassed(a, now) && a.date === today) {
+  } else if (isNoShowSuggested(a, clock.now(), data.clinic.settings.noShowGraceMinutes)) {
     detail = t('slotPassed');
   }
 
@@ -221,7 +224,9 @@ export function AppointmentScreen() {
               <h2>{t('payment')}</h2>
               <PaymentBadge status={a.paymentStatus} />
             </div>
-            {payment && <p>{`${fmt.money(payment.amount)} · ${payment.method}`}</p>}
+            {payment && (
+              <p>{`${fmt.money(payment.amount)} · ${t(METHOD_LABEL[payment.method])}`}</p>
+            )}
             <div className="row">
               {act.recordPayment && (
                 <button
@@ -271,6 +276,7 @@ export function AppointmentScreen() {
               {history.length === 0 && <p className="sub">{t('noHistory')}</p>}
             </div>
           )}
+          {AppointmentExtras && <AppointmentExtras appointmentId={a.id} />}
         </div>
       </div>
     </div>

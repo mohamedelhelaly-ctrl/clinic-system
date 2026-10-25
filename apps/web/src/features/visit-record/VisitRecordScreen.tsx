@@ -8,16 +8,20 @@ import { DELIVERY_UI } from './deliveryStatus';
 import { draftFromUi, usePrescriptionDelivery } from './useOpenVisit';
 
 export function VisitRecordScreen() {
-  const { t, text } = useI18n();
+  const { t, text, fmt } = useI18n();
   const { ui, set, nav, goBack, root, toast } = useUi();
   const data = useClinicData();
   const dir = useDirectory();
   const repo = useRepository();
   const actor = useActor();
   const a = dir.appointment(ui.apptId) ?? data.appointments[0]!;
-  const p = dir.patient(a.patientId);
-  const d = dir.doctor(a.doctorId);
-  const history = usePatientHistory(a.patientId);
+  // Editing a saved record: it may predate appointments in the system (seeded history).
+  const editing = ui.editVisitId
+    ? data.visitRecords.find((v) => v.id === ui.editVisitId)
+    : undefined;
+  const p = dir.patient(editing?.patientId ?? a.patientId);
+  const d = dir.doctor(editing?.doctorId ?? a.doctorId);
+  const history = usePatientHistory(p.id).filter((h) => h.record.id !== editing?.id);
   const { message } = usePrescriptionDelivery(a.id);
   const delivery = message ? DELIVERY_UI[message.status] : undefined;
   const rxCount = draftFromUi(ui).items.filter(hasDrug).length;
@@ -26,6 +30,13 @@ export function VisitRecordScreen() {
   const saveDraft = async () => {
     await repo.saveVisitDraft(actor, a.id, draftFromUi(ui));
     toast(t('toastDraft'));
+  };
+  const saveEdit = async () => {
+    if (!editing) return;
+    await repo.editVisitRecord(actor, editing.id, draftFromUi(ui).fields);
+    set({ editVisitId: null, complaint: '', diagnosis: '', treatment: '' });
+    goBack();
+    toast(t('toastSaved'));
   };
   const complete = async () => {
     await repo.completeVisit(actor, a.id, draftFromUi(ui));
@@ -53,9 +64,11 @@ export function VisitRecordScreen() {
       <div className="split">
         <div className="card col">
           <div>
-            <h1>{t('visitRecord')}</h1>
+            <h1>{editing ? t('editVisitRecord') : t('visitRecord')}</h1>
             <p className="sub">
-              {`${text(p.name)} · ${text(d.name)} · ${a.time ?? t('walkinTag')}`}
+              {editing
+                ? `${text(p.name)} · ${text(d.name)} · ${fmt.date(editing.date)}`
+                : `${text(p.name)} · ${text(d.name)} · ${a.time ?? t('walkinTag')}`}
             </p>
           </div>
           <label className="lbl">
@@ -82,21 +95,31 @@ export function VisitRecordScreen() {
               onChange={(e) => set({ treatment: e.target.value })}
             />
           </label>
-          <div className="row sb">
-            <button className="btn lg" onClick={() => nav('rx')}>
-              <Icon name="rx" />
-              {rxCount ? t('prescriptionCount', { n: rxCount }) : t('addPrescription')}
-            </button>
-            <span className={delivery?.cls ?? ''}>{delivery ? t(delivery.label) : ''}</span>
-          </div>
-          <div className="row">
-            <button className="btn lg" onClick={saveDraft}>
-              {t('saveDraft')}
-            </button>
-            <button className="btn p lg" onClick={complete}>
-              {t('saveComplete')}
-            </button>
-          </div>
+          {editing ? (
+            <div className="row">
+              <button className="btn p lg" onClick={saveEdit}>
+                {t('saveChanges')}
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="row sb">
+                <button className="btn lg" onClick={() => nav('rx')}>
+                  <Icon name="rx" />
+                  {rxCount ? t('prescriptionCount', { n: rxCount }) : t('addPrescription')}
+                </button>
+                <span className={delivery?.cls ?? ''}>{delivery ? t(delivery.label) : ''}</span>
+              </div>
+              <div className="row">
+                <button className="btn lg" onClick={saveDraft}>
+                  {t('saveDraft')}
+                </button>
+                <button className="btn p lg" onClick={complete}>
+                  {t('saveComplete')}
+                </button>
+              </div>
+            </>
+          )}
         </div>
         <div className={ui.histOpen ? 'hp open' : 'hp'}>
           <div className="card col">

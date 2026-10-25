@@ -8,9 +8,10 @@ import type {
   AppointmentEventKind,
   IsoDateTime,
 } from '../../domain';
-import { reminderDueAt, reminderPolicy } from '../../domain';
+import { reminderDueAt, reminderPolicy, wasReminderSent } from '../../domain';
 import type { MessageKey } from '../../i18n';
 import { useI18n } from '../../i18n';
+import { METHOD_LABEL } from '../payments/usePayments';
 
 export interface LogLine {
   icon: IconName;
@@ -20,6 +21,7 @@ export interface LogLine {
 
 const EVENT_UI: Record<AppointmentEventKind, { icon: IconName; text: MessageKey }> = {
   booked: { icon: 'edit', text: 'evBooked' },
+  moved_to_call_list: { icon: 'alert', text: 'logCutoff' },
   arrived: { icon: 'check', text: 'evArrived' },
   confirmed_manually: { icon: 'phone', text: 'evConfirmedManually' },
   call_confirmed: { icon: 'phone', text: 'evCallConfirmed' },
@@ -70,7 +72,12 @@ export function useAppointmentLog(appointment: Appointment): LogLine[] {
       case 'payment_gate_overridden':
         return t('evOverride', { reason: String(p.reason) });
       case 'payment_recorded':
-        return t('evPaymentRecorded', { amount: Number(p.amount), method: String(p.method) });
+        return t('evPaymentRecorded', {
+          amount: Number(p.amount),
+          method: t(METHOD_LABEL[p.method as keyof typeof METHOD_LABEL]),
+        });
+      case 'moved_to_call_list':
+        return t('logCutoff', { h: Number(p.h) });
       default:
         return t(EVENT_UI[e.kind].text);
     }
@@ -83,31 +90,45 @@ export function useAppointmentLog(appointment: Appointment): LogLine[] {
   );
   const channel = channelOf(appointment.id);
 
-  if (policy === 'walk_in') lines.push({ icon: 'walk', text: t('logWalkin'), when: t('today') });
-  else if (policy === 'booked_too_late') {
-    lines.push({ icon: 'bell', text: t('logShort'), when: t('today') });
+  if (policy === 'walk_in') {
+    lines.push({ icon: 'walk', text: t('logWalkin'), when: at(appointment.bookedAt) });
+  } else if (policy === 'booked_too_late') {
+    lines.push({ icon: 'bell', text: t('logShort'), when: at(appointment.bookedAt) });
+  } else if (wasReminderSent(reminder)) {
+    lines.push({ icon: 'bell', text: t('logReminder'), when: fmt.reminderTime(reminder!.sentAt!) });
   } else {
     const sendAt = reminder?.scheduledFor ?? reminderDueAt(appointment, reminderLeadHours)!;
-    lines.push({ icon: 'bell', text: t('logReminder'), when: fmt.reminderTime(sendAt) });
+    lines.push({ icon: 'bell', text: t('logReminderQueued'), when: fmt.reminderTime(sendAt) });
   }
   for (const r of reminder?.replies ?? []) {
     lines.push({
       icon: 'wa',
       text: r.reply === 'confirm' ? t('logReplyConfirm') : t('logReplyCancel'),
-      when: t('viaWhatsapp'),
+      when: `${t('viaWhatsapp')} · ${fmt.reminderTime(r.at)}`,
     });
   }
-  if (channel === 'phone')
-    lines.push({ icon: 'phone', text: t('logPhoneConfirmed'), when: t('today') });
+  const phoneConfirmation = data.calls.find(
+    (c) => c.appointmentId === appointment.id && c.outcome === 'confirmed',
+  );
+  if (channel === 'phone' && phoneConfirmation) {
+    lines.push({
+      icon: 'phone',
+      text: t('logPhoneConfirmed'),
+      when: at(phoneConfirmation.loggedAt),
+    });
+  }
+  const events = data.appointmentEvents.filter((e) => e.appointmentId === appointment.id);
   if (
     !channel &&
-    policy === 'automatic' &&
+    wasReminderSent(reminder) &&
+    reminder!.replies.length === 0 &&
     appointment.status !== 'cancelled' &&
     appointment.status !== 'no_show'
   ) {
     lines.push({ icon: 'clock', text: t('logNoReply'), when: '' });
   }
-  if (appointment.status === 'needs_call') {
+  // Seeded appointments were moved before the activity log existed.
+  if (appointment.status === 'needs_call' && !events.some((e) => e.kind === 'moved_to_call_list')) {
     lines.push({ icon: 'alert', text: t('logCutoff', { h: callListCutoffHours }), when: '' });
   }
   data.calls
@@ -119,10 +140,8 @@ export function useAppointmentLog(appointment: Appointment): LogLine[] {
         when: at(c.loggedAt),
       }),
     );
-  data.appointmentEvents
-    .filter((e) => e.appointmentId === appointment.id)
-    .forEach((e) =>
-      lines.push({ icon: EVENT_UI[e.kind].icon, text: eventText(e), when: at(e.at) }),
-    );
+  events.forEach((e) =>
+    lines.push({ icon: EVENT_UI[e.kind].icon, text: eventText(e), when: at(e.at) }),
+  );
   return lines;
 }

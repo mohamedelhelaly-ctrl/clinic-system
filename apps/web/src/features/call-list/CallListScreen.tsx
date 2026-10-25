@@ -1,8 +1,10 @@
+import { useClock } from '../../app/ClockProvider';
 import { useActor, useDirectory } from '../../app/hooks';
 import { useUi } from '../../app/uiState';
 import { Icon } from '../../components';
 import { useClinicData, useRepository } from '../../data';
 import type { CallOutcome } from '../../domain';
+import { isOnCallList } from '../../domain';
 import type { MessageKey } from '../../i18n';
 import { useI18n } from '../../i18n';
 
@@ -19,9 +21,10 @@ export function CallListScreen() {
   const dir = useDirectory();
   const repo = useRepository();
   const actor = useActor();
+  const now = useClock().now();
 
   const calls = data.appointments
-    .filter((a) => a.status === 'needs_call')
+    .filter((a) => isOnCallList(a, now))
     .sort((x, y) => (`${x.date}${x.time}` < `${y.date}${y.time}` ? -1 : 1));
 
   const log = (id: string, outcome: CallOutcome) => async () => {

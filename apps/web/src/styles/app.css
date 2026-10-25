@@ -24,6 +24,9 @@ body {
   font-size: 16px;
   line-height: 1.45;
 }
+[dir='rtl'] .ic.dir {
+  transform: scaleX(-1);
+}
 [dir='rtl'] body,
 [dir='rtl'] {
   font-family: 'Noto Sans Arabic', 'Figtree', system-ui, sans-serif;
@@ -287,7 +290,17 @@ textarea.inp {
   font-size: 14px;
   color: var(--ink);
 }
+/* Label heading with its hint ("*", "(optional)", "(EGP)") kept on one line. */
+.lbl .lt {
+  display: block;
+}
+/* In a form grid, fields in a row share their tops and their inputs line up
+   even when one label wraps. */
+.form > .lbl {
+  justify-content: space-between;
+}
 .lbl small {
+  font-size: 12px;
   font-weight: 400;
   color: var(--mut);
 }
@@ -358,7 +371,7 @@ textarea.inp {
 }
 .tr {
   display: grid;
-  grid-template-columns: 78px minmax(0, 1.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) auto;
+  grid-template-columns: 78px minmax(0, 1.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1.6fr);
   gap: 14px;
   align-items: center;
   padding: 14px 8px;
@@ -380,7 +393,7 @@ textarea.inp {
   padding: 8px;
   border-bottom: 1px solid var(--ln);
   display: grid;
-  grid-template-columns: 78px minmax(0, 1.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) auto;
+  grid-template-columns: 78px minmax(0, 1.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1.6fr);
   gap: 14px;
 }
 .time {
@@ -659,10 +672,9 @@ textarea.inp {
 }
 .rxr {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(
-      0,
-      1.2fr
-    ) auto;
+  grid-template-columns:
+    minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1.2fr)
+    auto;
   gap: 8px;
   align-items: end;
 }

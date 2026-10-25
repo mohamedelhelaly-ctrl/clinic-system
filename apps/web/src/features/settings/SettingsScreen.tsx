@@ -2,7 +2,8 @@ import { useActor } from '../../app/hooks';
 import { useUi } from '../../app/uiState';
 import { Icon, initial } from '../../components';
 import { useClinicData, useRepository } from '../../data';
-import type { Role } from '../../domain';
+import { useRef } from 'react';
+import type { LocalizedText, Role } from '../../domain';
 import type { MessageKey } from '../../i18n';
 import { useI18n } from '../../i18n';
 
@@ -19,13 +20,32 @@ const TABS = [
 ] as const;
 
 export function SettingsScreen() {
-  const { t, text, fmt } = useI18n();
+  const { t, text, fmt, lang } = useI18n();
   const { ui, set, toast } = useUi();
   const data = useClinicData();
   const repo = useRepository();
   const actor = useActor();
   const settings = data.clinic.settings;
   const chip = (on: boolean) => (on ? 'chip on' : 'chip');
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  /** Typed text replaces the form shown in the current language. */
+  const edited = (current: LocalizedText, typed: string): LocalizedText =>
+    typed === text(current)
+      ? current
+      : lang === 'ar'
+        ? { ...current, ar: typed }
+        : { value: typed };
+  const saveProfile = async () => {
+    await repo.updateClinicProfile(actor, {
+      name: edited(data.clinic.name, nameRef.current?.value ?? ''),
+      address: edited(data.clinic.address, addressRef.current?.value ?? ''),
+      phone: phoneRef.current?.value ?? data.clinic.phone,
+    });
+    toast(t('savedCheck'));
+  };
 
   const setCutoff = (h: number) =>
     void repo.updateClinicSettings(actor, { callListCutoffHours: Math.min(12, Math.max(1, h)) });
@@ -93,6 +113,7 @@ export function SettingsScreen() {
             <label className="lbl">
               {t('clinicLbl')}
               <input
+                ref={nameRef}
                 className="inp"
                 defaultValue={text(data.clinic.name)}
                 key={`n${text(data.clinic.name)}`}
@@ -101,6 +122,7 @@ export function SettingsScreen() {
             <label className="lbl">
               {t('address')}
               <input
+                ref={addressRef}
                 className="inp"
                 defaultValue={text(data.clinic.address)}
                 key={`a${text(data.clinic.address)}`}
@@ -108,7 +130,7 @@ export function SettingsScreen() {
             </label>
             <label className="lbl">
               {t('phone')}
-              <input className="inp" defaultValue={data.clinic.phone} />
+              <input ref={phoneRef} className="inp" defaultValue={data.clinic.phone} />
             </label>
             <div className="lbl">
               {t('logo')}
@@ -121,7 +143,7 @@ export function SettingsScreen() {
             </div>
           </div>
           <div>
-            <button className="btn p" onClick={() => toast(t('savedCheck'))}>
+            <button className="btn p" onClick={saveProfile}>
               {t('save')}
             </button>
           </div>

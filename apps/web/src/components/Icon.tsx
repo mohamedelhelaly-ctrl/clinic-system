@@ -10,10 +10,14 @@ interface IconProps {
   style?: CSSProperties;
 }
 
+/** Arrows that point "back" or "out"; mirrored in right-to-left layouts. */
+const DIRECTIONAL: ReadonlySet<IconName> = new Set(['back', 'out']);
+
 export function Icon({ name, small, label, style }: IconProps) {
   const a11y = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true as const };
+  const cls = ['ic', small && 's', DIRECTIONAL.has(name) && 'dir'].filter(Boolean).join(' ');
   return (
-    <svg className={small ? 'ic s' : 'ic'} viewBox="0 0 24 24" {...a11y} style={style}>
+    <svg className={cls} viewBox="0 0 24 24" {...a11y} style={style}>
       <path d={ICONS[name]} />
     </svg>
   );

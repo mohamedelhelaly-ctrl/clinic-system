@@ -4,6 +4,7 @@ import { useI18n } from '../i18n';
 export interface HistoryEntry {
   record: VisitRecord;
   doctorName: string;
+  hasPrescription: boolean;
 }
 
 /** Past visits with the three clinical fields, newest first. Doctors and admins only. */
@@ -11,7 +12,7 @@ export function VisitHistoryItems({ entries }: { entries: HistoryEntry[] }) {
   const { t, fmt } = useI18n();
   return (
     <>
-      {entries.map(({ record, doctorName }) => (
+      {entries.map(({ record, doctorName, hasPrescription }) => (
         <div className="tli" key={record.id}>
           <div className="row sb">
             <b>
@@ -33,6 +34,11 @@ export function VisitHistoryItems({ entries }: { entries: HistoryEntry[] }) {
             <b>{t('treatment')}</b>
             {record.treatment}
           </div>
+          {hasPrescription && (
+            <div className="row">
+              <span className="badge p-pkg">{t('prescription')}</span>
+            </div>
+          )}
         </div>
       ))}
     </>

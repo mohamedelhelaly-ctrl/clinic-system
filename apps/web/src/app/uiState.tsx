@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react';
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import type { AppointmentId, AppointmentStatus, PackageId, PatientId } from '../domain';
+import type {
+  AppointmentId,
+  AppointmentStatus,
+  PackageId,
+  PatientId,
+  VisitRecordId,
+} from '../domain';
 
 /*
  * View state only: which screen is open, form inputs, filters, open sheets.
@@ -60,6 +66,8 @@ export interface UiState {
   sheet: SheetName;
   toast: string;
   // home filters
+  /** Roster day, in days from today. */
+  hday: number;
   fDoc: string;
   fSt: 'all' | AppointmentStatus;
   attn: boolean;
@@ -95,6 +103,8 @@ export interface UiState {
   treatment: string;
   rxRows: RxRow[];
   histOpen: boolean;
+  /** Set when the visit record screen edits a saved record instead of the current visit. */
+  editVisitId: VisitRecordId | null;
   // patient file
   edPhone: string;
   edAddr: string;
@@ -117,6 +127,7 @@ export const initialUiState: UiState = {
   patId: null,
   sheet: '',
   toast: '',
+  hday: 0,
   fDoc: 'all',
   fSt: 'all',
   attn: false,
@@ -156,6 +167,7 @@ export const initialUiState: UiState = {
   treatment: '',
   rxRows: [],
   histOpen: false,
+  editVisitId: null,
   edPhone: '',
   edAddr: '',
   edAlerts: '',

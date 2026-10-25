@@ -106,6 +106,7 @@ export const en = {
   logWalkin: 'Walk-in. No reminders sent.',
   logShort: 'Booked less than 24 hours ahead: no automatic reminder.',
   logReminder: 'WhatsApp reminder sent 24 hours before (Confirm / Cancel).',
+  logReminderQueued: 'WhatsApp reminder scheduled 24 hours before (Confirm / Cancel).',
   logReplyConfirm: 'Patient replied: Confirm',
   logReplyCancel: 'Patient replied: Cancel',
   viaWhatsapp: 'Via WhatsApp',
@@ -187,6 +188,8 @@ export const en = {
   visitRecord: 'Visit record',
   saveDraft: 'Save draft',
   saveComplete: 'Save and complete visit',
+  saveChanges: 'Save changes',
+  editVisitRecord: 'Edit visit record',
   addPrescription: 'Add prescription',
   prescriptionCount: 'Prescription ({n})',
   drug: 'Drug',
@@ -273,7 +276,6 @@ export const en = {
   doctors: 'Doctors',
   date: 'Date',
   tomorrow: 'Tomorrow',
-  dayAfter: 'Monday',
   noteLbl: 'Note',
   blockPh: 'e.g. Public holiday, leave',
   blockedDefault: 'Blocked',
@@ -301,6 +303,7 @@ export const en = {
   toastPackageCreated: 'Package created',
   toastAdjusted: 'Adjusted',
   toastBlocked: 'Day blocked',
+  errSlotTaken: 'That slot has just been booked. Pick another time.',
 
   // Audit log (actor labels and entries)
   actorReceptionist: 'Receptionist {name}',
@@ -315,12 +318,28 @@ export const en = {
   'audit.package.adjusted':
     '{actor} adjusted a package for {patient} ({adjustment}, reason: {reason})',
   'audit.schedule.blocked': '{actor} blocked off a day for {doctor}',
+  'audit.clinic.edited': '{actor} edited the clinic profile',
 
   // Demo layer
   demoBadge: 'Demo',
   demoFictional: 'All names and data are fictional',
   resetDemo: 'Reset demo',
   toastReset: 'Demo data restored',
+  demoTime: 'Demo time',
+  demoPlusHour: '+1 hour',
+  demoPlusDay: '+1 day',
+  demoPlusMonth: '+1 month',
+  demoSimulate: 'Demo: simulate',
+  demoReminderQueued: 'Reminder due {when}',
+  demoReminderSent: 'Reminder sent {when}',
+  demoReminderNone: 'No automatic reminder for this appointment',
+  demoJumpReminder: 'Jump to reminder time',
+  demoJumpAppt: 'Jump to appointment time',
+  demoReply: "Patient's WhatsApp reply",
+  demoReplyConfirm: 'Confirm',
+  demoReplyCancel: 'Cancel',
+  demoNoReply: 'No reply (jump past cut-off)',
+  toastDemoReply: 'Patient reply received',
 } as const;
 
 export type MessageKey = keyof typeof en;

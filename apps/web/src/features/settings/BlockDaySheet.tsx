@@ -6,7 +6,7 @@ import { addDays } from '../../domain';
 import { useI18n } from '../../i18n';
 
 export function BlockDaySheet() {
-  const { t, text } = useI18n();
+  const { t, text, fmt } = useI18n();
   const { ui, set, toast } = useUi();
   const data = useClinicData();
   const repo = useRepository();
@@ -37,7 +37,7 @@ export function BlockDaySheet() {
           onChange={(e) => set({ blkDay: e.target.value as '1' | '2' })}
         >
           <option value="1">{t('tomorrow')}</option>
-          <option value="2">{t('dayAfter')}</option>
+          <option value="2">{fmt.dayLabel(addDays(today, 2))}</option>
         </select>
       </label>
       <label className="lbl">

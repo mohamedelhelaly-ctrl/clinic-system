@@ -43,7 +43,9 @@ export function NewPackageSheet() {
       </label>
       <div className="form">
         <label className="lbl">
-          <span>{t('totalPrice')}</span> {t('egpParen')}
+          <span className="lt">
+            <span>{t('totalPrice')}</span> {t('egpParen')}
+          </span>
           <input
             className="inp"
             inputMode="numeric"
@@ -61,7 +63,9 @@ export function NewPackageSheet() {
           />
         </label>
         <label className="lbl">
-          <span>{t('expiry')}</span> <small>{t('optional')}</small>
+          <span className="lt">
+            <span>{t('expiry')}</span> <small>{t('optional')}</small>
+          </span>
           <input
             className="inp"
             type="date"
@@ -70,7 +74,9 @@ export function NewPackageSheet() {
           />
         </label>
         <label className="lbl">
-          <span>{t('notes')}</span> <small>{t('optional')}</small>
+          <span className="lt">
+            <span>{t('notes')}</span> <small>{t('optional')}</small>
+          </span>
           <input
             className="inp"
             value={ui.pkgNotes}

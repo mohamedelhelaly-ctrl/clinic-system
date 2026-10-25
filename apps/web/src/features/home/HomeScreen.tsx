@@ -6,7 +6,7 @@ import { useRequiredSession } from '../../auth';
 import { APPOINTMENT_STATUS_UI, Icon, StatusBadges } from '../../components';
 import { useClinicData } from '../../data';
 import type { AppointmentStatus } from '../../domain';
-import { APPOINTMENT_STATUSES, can, isActive, needsAttention } from '../../domain';
+import { addDays, APPOINTMENT_STATUSES, can, isActive, needsAttention } from '../../domain';
 import { useI18n } from '../../i18n';
 import { useStartBooking } from '../booking/useStartBooking';
 
@@ -21,13 +21,15 @@ export function HomeScreen() {
   const startBooking = useStartBooking();
 
   const todays = useMemo(() => data.appointments.filter((a) => a.date === today), [data, today]);
+  const day = addDays(today, ui.hday);
+  const days = useMemo(() => data.appointments.filter((a) => a.date === day), [data, day]);
   const stats = [
     { n: todays.filter((a) => a.status !== 'cancelled').length, l: t('statTotal') },
     { n: todays.filter((a) => a.status === 'arrived').length, l: t('statArrived') },
     { n: todays.filter((a) => isActive(a.status)).length, l: t('statRemaining') },
   ];
   const sortKey = (a: (typeof todays)[number]) => a.time ?? `99:99${a.id}`;
-  const rows = todays
+  const rows = days
     .filter(
       (a) =>
         (ui.fDoc === 'all' || a.doctorId === ui.fDoc) &&
@@ -69,6 +71,17 @@ export function HomeScreen() {
         ))}
       </div>
       <div className="card" style={{ padding: '8px 16px 4px' }}>
+        <div className="tabs" style={{ paddingTop: 10 }}>
+          {[0, 1, 2].map((i) => (
+            <button
+              key={i}
+              className={ui.hday === i ? 'chip on' : 'chip'}
+              onClick={() => set({ hday: i })}
+            >
+              {(i === 0 ? `${t('today')} · ` : '') + fmt.dayLabel(addDays(today, i))}
+            </button>
+          ))}
+        </div>
         <div className="row" style={{ padding: '10px 0 14px' }}>
           <select
             className="inp"
