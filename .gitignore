@@ -16,6 +16,13 @@ demo-recording/test-results/
 demo-recording/playwright-report/
 e2e/output/
 
+# Promo clips: videos, raw frames and snapshots are generated
+video/clips/*.mp4
+video/clips/*.webm
+video/clips/raw/
+video/clips/.snapshots/
+video/clips/posters/
+
 # Logs
 *.log
 npm-debug.log*
