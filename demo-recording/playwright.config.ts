@@ -16,6 +16,8 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     baseURL: `http://localhost:${PORT}`,
+    // PW_CHANNEL=chrome uses the installed Google Chrome instead of Playwright's Chromium.
+    ...(process.env.PW_CHANNEL ? { channel: process.env.PW_CHANNEL } : {}),
     video: 'on',
     trace: 'off',
     screenshot: 'off',

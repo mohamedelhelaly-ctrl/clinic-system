@@ -54,7 +54,7 @@ test('04 register a walk-in who shares a phone', async ({ director: d, page }) =
   await d.type('input[inputmode=tel]', '01012345678');
   await d.show('.alert', 'already linked');
   await d.tap('.btn.p.lg', 'Add as another patient');
-  await d.tap('button.doc', 'Dr. Hany');
+  await d.tap('button.doc', 'Dr. Dina');
   await d.show('.sub', "today's queue");
   await d.tap('.btn.p.lg', 'Save appointment');
   await expect(page.locator('button.tr', { hasText: 'Laila Hassan' })).toBeVisible();

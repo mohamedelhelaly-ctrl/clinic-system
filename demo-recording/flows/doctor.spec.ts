@@ -1,10 +1,10 @@
 import { expect, test } from './helpers';
 
-/* Doctor takes, signed in as Dr. Karim Abdelrahman (Internal Medicine). */
+/* Doctor takes, signed in as Dr. Karim Adel (Internal Medicine). */
 
 test('01 review history before the patient enters', async ({ director: d }) => {
   await d.open('doctor');
-  await d.tap('button.tr', 'Ahmed Samir');
+  await d.tap('button.tr', 'Sherif Mansour');
   await d.show('.alert', 'Penicillin');
   await d.tap('.btn.sm', 'Open patient file');
   await d.show('.tli', 'Acute tonsillitis');

@@ -17,9 +17,11 @@
     "typecheck": "npm run typecheck -w apps/web",
     "format": "prettier --write .",
     "demo:reset": "npm run dev -w apps/web -- --open /?reset=1",
-    "record": "npm run record -w demo-recording"
+    "record": "npm run record -w demo-recording",
+    "test:e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "devDependencies": {
-    "prettier": "3.9.10"
+    "prettier": "3.9.10",
+    "@playwright/test": "1.63.0"
   }
 }
