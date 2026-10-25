@@ -6,8 +6,9 @@ npm run dev           # http://localhost:5173
 npm run demo:reset    # starts the app and opens it with ?reset=1
 ```
 
-The demo always runs on **Saturday 24 October 2026 at 10:15** (clinic hours),
+The demo starts on **Saturday 24 October 2026 at 10:15** (clinic hours),
 so the roster, call list and "Needs attention" look the same on every run.
+Time only moves when you move it (see "Demo clock" below); Reset puts it back.
 All names, phone numbers and medical details are fictional. A **Demo** badge
 and the **Reset demo** button sit at the bottom of every screen.
 
@@ -22,12 +23,24 @@ and the **Reset demo** button sit at the bottom of every screen.
 Examples:
 
 - `/?role=receptionist&lang=en&reset=1` — clean start at the front desk
-- `/?role=doctor&reset=1` — Dr. Karim Abdelrahman's view, filtered to his patients
+- `/?role=doctor&reset=1` — Dr. Karim Adel's view, filtered to his patients
 - `/?role=admin&lang=ar` — admin in Arabic
 
 Without `role` the login screen appears; pick the role in **Demo role** and
 press **Sign in**. In the app, the **Demo role** selector in the header
 switches role at any time and the language button toggles English/Arabic.
+
+## Demo clock and simulated patients
+
+- The footer shows the **Demo time** with **+1 hour**, **+1 day** and **+1 month**.
+- Each appointment has a **Demo: simulate** card: **Jump to reminder time**
+  (the 24-hour WhatsApp reminder goes out), **Jump to appointment time**, and
+  the patient's WhatsApp reply **Confirm**, **Cancel** or **No reply** (jumps
+  past the 3-hour cut-off, so the appointment becomes Needs call and joins the
+  Call list).
+- After the slot time plus a 15-minute grace period, the appointment suggests
+  marking No show.
+- Nobody in the seed is called Ahmed Samir: the full-journey test registers him.
 
 ## Resetting
 
@@ -37,21 +50,21 @@ with `?reset=1`, or run `npm run demo:reset`.
 
 ## Seed data at a glance
 
-| Time  | Patient                                              | Doctor                                    | Appointment status                     | Payment            |
-| ----- | ---------------------------------------------------- | ----------------------------------------- | -------------------------------------- | ------------------ |
-| 08:30 | Salma Khaled                                         | Dr. Salma El-Sayed (Dermatology)          | No show                                | Unpaid             |
-| 09:00 | Ahmed Samir (penicillin allergy, 4 past visits)      | Dr. Karim Abdelrahman (Internal Medicine) | Completed, visit record + prescription | Paid               |
-| 09:30 | Omar Ibrahim (child, shares mother's phone)          | Dr. Hany Fouad (Pediatrics)               | In consultation                        | Paid               |
-| 10:00 | Nourhan Adel (package 8,000 EGP / 10 visits, 7 left) | Dr. Salma El-Sayed                        | Confirmed (by phone)                   | Covered by package |
-| 10:00 | Karim Nabil                                          | Dr. Karim Abdelrahman                     | Arrived & waiting                      | Paid               |
-| 10:30 | Hossam Tarek                                         | Dr. Karim Abdelrahman                     | Arrived & waiting                      | Unpaid             |
-| 11:00 | Farida Mostafa                                       | Dr. Salma El-Sayed                        | Confirmed (WhatsApp)                   | Unpaid             |
-| 11:30 | Mahmoud Gaber                                        | Dr. Karim Abdelrahman                     | Needs call (one unanswered call)       | Unpaid             |
-| 12:00 | Mona Hassan (mother, shares phone 01012345678)       | Dr. Karim Abdelrahman                     | Scheduled                              | Unpaid             |
-| 12:30 | Yara Waleed                                          | Dr. Hany Fouad                            | Cancelled (patient replied Cancel)     | Unpaid             |
+| Time  | Patient                                              | Doctor                             | Appointment status                     | Payment            |
+| ----- | ---------------------------------------------------- | ---------------------------------- | -------------------------------------- | ------------------ |
+| 08:30 | Salma Khaled                                         | Dr. Salma Nabil (Dermatology)      | No show                                | Unpaid             |
+| 09:00 | Sherif Mansour (penicillin allergy, 4 past visits)   | Dr. Karim Adel (Internal Medicine) | Completed, visit record + prescription | Paid               |
+| 09:30 | Omar Ibrahim (child, shares mother's phone)          | Dr. Dina Farouk (Pediatrics)       | In consultation                        | Paid               |
+| 10:00 | Nourhan Adel (package 8,000 EGP / 10 visits, 7 left) | Dr. Salma Nabil                    | Confirmed (by phone)                   | Covered by package |
+| 10:00 | Karim Nabil                                          | Dr. Karim Adel                     | Arrived & waiting                      | Paid               |
+| 10:30 | Hossam Tarek                                         | Dr. Karim Adel                     | Arrived & waiting                      | Unpaid             |
+| 11:00 | Farida Mostafa                                       | Dr. Salma Nabil                    | Confirmed (WhatsApp)                   | Unpaid             |
+| 11:30 | Mahmoud Gaber                                        | Dr. Karim Adel                     | Needs call (one unanswered call)       | Unpaid             |
+| 12:00 | Mona Hassan (mother, shares phone 01012345678)       | Dr. Karim Adel                     | Scheduled (booked this morning)        | Unpaid             |
+| 12:30 | Yara Waleed                                          | Dr. Dina Farouk                    | Cancelled (patient replied Cancel)     | Unpaid             |
 
 Tomorrow: Salma Khaled 09:00 (Needs call) and Farida Mostafa 10:30 (Scheduled).
-Dr. Hany Fouad is on conference leave on Monday 26 October.
+Dr. Dina Farouk is on conference leave on Monday 26 October.
 
 ## Click paths
 
@@ -71,7 +84,7 @@ Each path is also a Playwright take in `demo-recording/flows` (run
    WhatsApp reminder will be sent 24 hours before" → **Save appointment**.
 4. **Register a walk-in who shares a phone** — **Walk-in** → search a new name
    → **Register new patient** → phone `01012345678` → the duplicate warning
-   names Mona Hassan and Omar Ibrahim → **Add as another patient** → _Dr. Hany_
+   names Mona Hassan and Omar Ibrahim → **Add as another patient** → _Dr. Dina_
    → **Save appointment**. The walk-in joins today's queue as Arrived & waiting.
 5. **Work the call list** — **Call list** → _Mahmoud Gaber_ (one unanswered
    attempt at 09:40) → **No answer** (attempt logged) → **Confirmed by phone**
@@ -81,12 +94,12 @@ Each path is also a Playwright take in `demo-recording/flows` (run
    shows 7 of 10 visits left.
 7. **Arabic** — press **العربية**; the whole UI flips to right-to-left.
 
-Also worth showing: open _Ahmed Samir_ as the receptionist — the visit history
+Also worth showing: open _Sherif Mansour_ as the receptionist — the visit history
 shows only "Visit completed" with a lock: clinical notes are for doctors only.
 
 ### Doctor (`/?role=doctor&reset=1`)
 
-1. **History before the patient enters** — _Ahmed Samir_ → the penicillin
+1. **History before the patient enters** — _Sherif Mansour_ → the penicillin
    allergy is pinned → **Open patient file** → four past visits, newest first
    → **Edited** shows who changed a record and when.
 2. **Payment gate** — _Hossam Tarek_: **Start consultation** is disabled until

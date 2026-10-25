@@ -28,6 +28,7 @@ Open `http://localhost:5173/?role=receptionist&reset=1`. More in
 | `npm run dev`        | Start the web app (Vite).                                 |
 | `npm run build`      | Type-check and build for production into `apps/web/dist`. |
 | `npm test`           | Unit tests (Vitest).                                      |
+| `npm run test:e2e`   | End-to-end tests at phone and desktop size (Playwright).  |
 | `npm run lint`       | ESLint and Prettier check.                                |
 | `npm run typecheck`  | TypeScript, strict mode.                                  |
 | `npm run demo:reset` | Start the app and open it on fresh seed data.             |
@@ -43,6 +44,7 @@ apps/web            The web app (Vite + React + TypeScript)
   src/i18n          English and Arabic strings
   src/demo          Demo-only code (seed, fixed clock, URL parameters, role switcher)
 demo-recording      Playwright recording takes per actor
+e2e                 End-to-end tests (see docs/DEMO_AUDIT.md)
 docs                Spec, architecture, demo guide, roadmap, migration report
 prototype           Original Claude Design export (reference only)
 video               Placeholder for the promo video
@@ -55,3 +57,4 @@ video               Placeholder for the promo video
 - [Running and recording the demo](docs/DEMO.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Prototype migration report](docs/MIGRATION.md)
+- [Demo audit and end-to-end results](docs/DEMO_AUDIT.md)
