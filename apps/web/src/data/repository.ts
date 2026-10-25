@@ -15,6 +15,7 @@ import type {
   PackageId,
   Patient,
   PatientId,
+  PatientReply,
   Payment,
   PaymentMethod,
   PrescriptionItem,
@@ -22,6 +23,7 @@ import type {
   UserId,
   VisitRecord,
   VisitRecordFields,
+  VisitRecordId,
 } from '../domain';
 import type { ClinicSnapshot } from './snapshot';
 
@@ -68,6 +70,12 @@ export interface VisitDraft {
   items: PrescriptionItem[];
 }
 
+export interface ClinicProfilePatch {
+  name: LocalizedText;
+  address: LocalizedText;
+  phone: string;
+}
+
 export interface NewPackageInput {
   patientId: PatientId;
   totalPrice: number;
@@ -86,6 +94,8 @@ export interface NewPackageInput {
  */
 export interface ClinicRepository {
   getSnapshot(): ClinicSnapshot;
+  /** The snapshot as `role` may see it (clinical content removed for receptionists). */
+  getSnapshotFor(role: Role): ClinicSnapshot;
   subscribe(listener: () => void): () => void;
 
   registerPatient(actor: Actor, input: NewPatientInput): Promise<Patient>;
@@ -136,13 +146,27 @@ export interface ClinicRepository {
     draft: VisitDraft,
   ): Promise<MessageLog>;
   resendMessage(actor: Actor, messageId: string): Promise<MessageLog>;
+  /** Edits a saved visit record, keeping the previous values as a revision (spec VR-6). */
+  editVisitRecord(
+    actor: Actor,
+    visitRecordId: VisitRecordId,
+    fields: VisitRecordFields,
+  ): Promise<VisitRecord>;
 
   blockDoctorDay(actor: Actor, doctorId: DoctorId, date: IsoDate, note: string): Promise<void>;
   updateClinicSettings(actor: Actor, patch: Partial<ClinicSettings>): Promise<void>;
+  updateClinicProfile(actor: Actor, patch: ClinicProfilePatch): Promise<void>;
 
   /** Demo-only hooks. Absent in production; the UI hides demo controls when undefined. */
   readonly demo?: {
     simulateDeliveryFailure(messageId: string): void;
+    /**
+     * Runs what the server's scheduler does at the current clock time: sends
+     * reminders that are due and moves unanswered appointments to Needs call.
+     */
+    runScheduledJobs(): Promise<void>;
+    /** A patient's quick reply to the reminder, as the WhatsApp webhook would deliver it. */
+    simulatePatientReply(appointmentId: AppointmentId, reply: PatientReply): Promise<void>;
   };
 }
 

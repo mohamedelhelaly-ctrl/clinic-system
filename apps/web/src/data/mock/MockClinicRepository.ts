@@ -19,13 +19,19 @@ import type {
   PackageId,
   Patient,
   PatientId,
+  PatientReply,
   Payment,
   PaymentMethod,
   Prescription,
+  Role,
   VisitRecord,
+  VisitRecordFields,
+  VisitRecordId,
+  VisitRecordRevision,
 } from '../../domain';
 import {
   adjustPackage,
+  can,
   checkAppointmentTransition,
   checkPaymentTransition,
   consumeVisit,
@@ -34,11 +40,19 @@ import {
   findActivePackage,
   hasDrug,
   initialAppointmentStatus,
+  isPreArrival,
+  isReminderDue,
+  isSlotTaken,
   momentOf,
   reminderPolicy,
+  shouldMoveToNeedsCall,
+  statusAfterReply,
+  wasReminderSent,
 } from '../../domain';
+import { snapshotForRole } from '../redaction';
 import type {
   Actor,
+  ClinicProfilePatch,
   ClinicRepository,
   NewAppointmentInput,
   NewPackageInput,
@@ -65,6 +79,9 @@ export interface MockRepositoryOptions {
   initialCounter?: number;
 }
 
+/** Author of what the server's scheduler does on its own (reminders, cut-off). */
+const SYSTEM: Actor = { userId: 'system', role: 'admin' };
+
 /**
  * In-browser implementation of the repository for the demo. It applies the
  * same domain rules the backend will, persists to localStorage, and fakes the
@@ -74,6 +91,7 @@ export class MockClinicRepository implements ClinicRepository {
   private state: ClinicSnapshot;
   private counter: number;
   private listeners = new Set<() => void>();
+  private views = new Map<Role, { source: ClinicSnapshot; view: ClinicSnapshot }>();
   private readonly reminders: LeadTimeReminderScheduler;
 
   constructor(private readonly options: MockRepositoryOptions) {
@@ -107,6 +125,15 @@ export class MockClinicRepository implements ClinicRepository {
 
   getSnapshot = (): ClinicSnapshot => this.state;
 
+  /** Memoized per role so React sees a stable snapshot until the data changes. */
+  getSnapshotFor = (role: Role): ClinicSnapshot => {
+    const cached = this.views.get(role);
+    if (cached?.source === this.state) return cached.view;
+    const view = snapshotForRole(this.state, role);
+    this.views.set(role, { source: this.state, view });
+    return view;
+  };
+
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
@@ -126,7 +153,77 @@ export class MockClinicRepository implements ClinicRepository {
       const message = this.state.messages.find((m) => m.id === messageId);
       if (message?.providerMessageId) this.options.whatsapp.fail(message.providerMessageId);
     },
+    runScheduledJobs: () => this.runScheduledJobs(),
+    simulatePatientReply: (appointmentId: AppointmentId, reply: PatientReply) =>
+      this.receivePatientReply(appointmentId, reply),
   };
+
+  private reminderOf(appointmentId: AppointmentId): MessageLog | undefined {
+    return this.state.messages.find(
+      (m) => m.type === 'reminder' && m.appointmentId === appointmentId,
+    );
+  }
+
+  /** The server's scheduler: send due reminders, then apply the no-reply cut-off. */
+  private async runScheduledJobs(): Promise<void> {
+    const now = this.now();
+    for (const message of this.state.messages.filter((m) => isReminderDue(m, now))) {
+      const a = this.state.appointments.find((x) => x.id === message.appointmentId);
+      // Nothing to remind about once the visit is closed or its time has passed.
+      if (!a || a.time === null || !isPreArrival(a.status) || dateTime(a.date, a.time) <= now) {
+        continue;
+      }
+      const patient = this.patient(a.patientId);
+      const { providerMessageId } = await this.options.whatsapp.send({
+        to: patient.phone,
+        template: 'appointment_reminder',
+        params: { patient: patient.name.value, date: a.date, time: a.time },
+      });
+      this.update((s) => ({
+        ...s,
+        messages: s.messages.map((m) =>
+          m.id === message.id
+            ? { ...m, status: 'sent', providerMessageId, sentAt: m.scheduledFor }
+            : m,
+        ),
+      }));
+    }
+    const { callListCutoffHours } = this.state.clinic.settings;
+    for (const a of this.state.appointments) {
+      if (!shouldMoveToNeedsCall(a, this.reminderOf(a.id), now, callListCutoffHours)) continue;
+      this.patchAppointment(a.id, { status: 'needs_call' });
+      this.event(SYSTEM, a.id, 'moved_to_call_list', { h: callListCutoffHours });
+    }
+  }
+
+  /** What the WhatsApp webhook does with a Confirm / Cancel quick reply (spec RC-2). */
+  private async receivePatientReply(
+    appointmentId: AppointmentId,
+    reply: PatientReply,
+  ): Promise<void> {
+    const appointment = this.appointment(appointmentId);
+    const reminder = this.reminderOf(appointmentId);
+    if (!wasReminderSent(reminder)) throw new DomainError('no_reminder_sent');
+    const now = this.now();
+    this.update((s) => ({
+      ...s,
+      messages: s.messages.map((m) =>
+        m.id === reminder!.id ? { ...m, replies: [...m.replies, { reply, at: now }] } : m,
+      ),
+    }));
+    const to = statusAfterReply(reply);
+    const check = checkAppointmentTransition(appointment, to, {
+      now: momentOf(this.options.clock),
+    });
+    // A late reply is still logged, but it cannot reopen a closed appointment.
+    if (!check.ok) return;
+    this.patchAppointment(
+      appointmentId,
+      to === 'cancelled'
+        ? { status: to, cancellation: { source: 'patient_whatsapp', reason: '' } }
+        : { status: to },
+    );
+  }
 
   private update(fn: (s: ClinicSnapshot) => ClinicSnapshot): void {
     this.state = fn(this.state);
@@ -290,8 +387,15 @@ export class MockClinicRepository implements ClinicRepository {
 
   // ---- appointments ---------------------------------------------------------
 
+  private assertSlotFree(doctorId: DoctorId, date: IsoDate, time: ClockTime | null): void {
+    if (time !== null && isSlotTaken(this.state.appointments, doctorId, date, time)) {
+      throw new DomainError('slot_taken');
+    }
+  }
+
   async bookAppointment(actor: Actor, input: NewAppointmentInput): Promise<Appointment> {
     const walkIn = input.time === null;
+    if (!walkIn) this.assertSlotFree(input.doctorId, input.date, input.time);
     const today = this.options.clock.today();
     const doctor = this.state.doctors.find((d) => d.id === input.doctorId);
     const hasPackage = !!findActivePackage(this.state.packages, input.patientId, today);
@@ -409,6 +513,7 @@ export class MockClinicRepository implements ClinicRepository {
       now: momentOf(this.options.clock),
     });
     if (!check.ok) throw new DomainError(check.reason);
+    this.assertSlotFree(old.doctorId, slot.date, slot.time);
     const today = this.options.clock.today();
     const replacement: Appointment = {
       ...old,
@@ -759,6 +864,42 @@ export class MockClinicRepository implements ClinicRepository {
     return resent;
   }
 
+  async editVisitRecord(
+    actor: Actor,
+    visitRecordId: VisitRecordId,
+    fields: VisitRecordFields,
+  ): Promise<VisitRecord> {
+    if (!can(actor.role, 'visitRecord.write')) throw new DomainError('forbidden');
+    const before = this.state.visitRecords.find((v) => v.id === visitRecordId);
+    if (!before) throw new DomainError('not_found');
+    if (before.finalizedAt === null) throw new DomainError('not_finalized');
+    const after: VisitRecord = { ...before, ...fields };
+    const revision: VisitRecordRevision = {
+      clinicId: this.clinicId,
+      visitRecordId,
+      editedBy: actor.userId,
+      editedAt: this.now(),
+      complaint: before.complaint,
+      diagnosis: before.diagnosis,
+      treatment: before.treatment,
+    };
+    this.update((s) => ({
+      ...s,
+      visitRecords: s.visitRecords.map((v) => (v.id === visitRecordId ? after : v)),
+      visitRecordRevisions: [...s.visitRecordRevisions, revision],
+    }));
+    this.audit(
+      actor,
+      'visit_record',
+      visitRecordId,
+      'visit_record.edited',
+      { patient: this.patient(before.patientId).name, date: before.date },
+      before,
+      after,
+    );
+    return after;
+  }
+
   // ---- administration -------------------------------------------------------
 
   async blockDoctorDay(
@@ -794,5 +935,12 @@ export class MockClinicRepository implements ClinicRepository {
       ...s,
       clinic: { ...s.clinic, settings: { ...s.clinic.settings, ...patch } },
     }));
+  }
+
+  async updateClinicProfile(actor: Actor, patch: ClinicProfilePatch): Promise<void> {
+    const before = this.state.clinic;
+    const after = { ...before, ...patch };
+    this.update((s) => ({ ...s, clinic: after }));
+    this.audit(actor, 'clinic', before.id, 'clinic.edited', {}, before, after);
   }
 }

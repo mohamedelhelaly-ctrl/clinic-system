@@ -7,7 +7,7 @@ export interface StoredState {
 }
 
 /** Bump when the seed or the snapshot shape changes so old browser data is discarded. */
-export const STORAGE_VERSION = 1;
+export const STORAGE_VERSION = 2;
 
 export interface SnapshotStorage {
   load(): StoredState | null;
