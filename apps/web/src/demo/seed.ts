@@ -32,7 +32,7 @@ const doctors: Doctor[] = [
     id: 'd1',
     clinicId: CLINIC,
     userId: 'u-karim',
-    name: t('Dr. Karim Abdelrahman', 'د. كريم عبد الرحمن'),
+    name: t('Dr. Karim Adel', 'د. كريم عادل'),
     specialty: t('Internal Medicine', 'الباطنة'),
     fee: 400,
     slotMinutes: 30,
@@ -41,7 +41,7 @@ const doctors: Doctor[] = [
     id: 'd2',
     clinicId: CLINIC,
     userId: 'u-salma',
-    name: t('Dr. Salma El-Sayed', 'د. سلمى السيد'),
+    name: t('Dr. Salma Nabil', 'د. سلمى نبيل'),
     specialty: t('Dermatology', 'الجلدية'),
     fee: 450,
     slotMinutes: 30,
@@ -49,8 +49,8 @@ const doctors: Doctor[] = [
   {
     id: 'd3',
     clinicId: CLINIC,
-    userId: 'u-hany',
-    name: t('Dr. Hany Fouad', 'د. هاني فؤاد'),
+    userId: 'u-dina',
+    name: t('Dr. Dina Farouk', 'د. دينا فاروق'),
     specialty: t('Pediatrics', 'الأطفال'),
     fee: 350,
     slotMinutes: 30,
@@ -108,7 +108,7 @@ const patients: Patient[] = [
   // Several past visits and a penicillin allergy.
   patient(
     'p3',
-    t('Ahmed Samir', 'أحمد سمير'),
+    t('Sherif Mansour', 'شريف منصور'),
     '01023456789',
     '1971-11-02',
     'M',
@@ -185,6 +185,8 @@ interface SeedAppointment {
   paymentStatus: PaymentStatus;
   /** Patient replies to the 24h WhatsApp reminder. */
   replies?: ('confirm' | 'cancel')[];
+  /** Booked less than 24 hours ahead, so no automatic reminder (spec RC-3). */
+  bookedAt?: string;
 }
 
 const seedAppointments: SeedAppointment[] = [
@@ -261,6 +263,7 @@ const seedAppointments: SeedAppointment[] = [
     reason: t('Recurrent headaches', 'صداع متكرر'),
     status: 'scheduled',
     paymentStatus: 'unpaid',
+    bookedAt: `${TODAY}T08:40`,
   },
   {
     id: 'a8',
@@ -330,7 +333,7 @@ const appointments: Appointment[] = seedAppointments.map((a) => ({
   source: 'phone',
   status: a.status,
   paymentStatus: a.paymentStatus,
-  bookedAt: '2026-10-19T12:00',
+  bookedAt: a.bookedAt ?? '2026-10-19T12:00',
   arrivedAt: ['arrived', 'in_consultation', 'completed'].includes(a.status)
     ? at(a.date, a.time)
     : null,
@@ -343,26 +346,29 @@ const appointments: Appointment[] = seedAppointments.map((a) => ({
 }));
 
 /** The 24-hour reminder for every seeded appointment, with the patient's replies. */
-const reminderMessages: MessageLog[] = seedAppointments.map((a, i) => {
+const reminderMessages: MessageLog[] = seedAppointments.flatMap((a, i): MessageLog[] => {
+  if (a.bookedAt) return [];
   const sendAt = at(dayBefore(a.date), a.time);
   const sent = sendAt <= at(TODAY, '10:15');
-  return {
-    id: `m${i + 1}`,
-    clinicId: CLINIC,
-    type: 'reminder',
-    channel: 'whatsapp',
-    appointmentId: a.id,
-    prescriptionId: null,
-    status: sent ? 'delivered' : 'queued',
-    providerMessageId: sent ? `wamid.seed.${i + 1}` : null,
-    scheduledFor: sendAt,
-    sentAt: sent ? sendAt : null,
-    deliveredAt: sent ? sendAt : null,
-    replies: (a.replies ?? []).map((reply, j) => ({
-      reply,
-      at: at(dayBefore(a.date), `1${8 + j}:00`),
-    })),
-  };
+  return [
+    {
+      id: `m${i + 1}`,
+      clinicId: CLINIC,
+      type: 'reminder',
+      channel: 'whatsapp',
+      appointmentId: a.id,
+      prescriptionId: null,
+      status: sent ? 'delivered' : 'queued',
+      providerMessageId: sent ? `wamid.seed.${i + 1}` : null,
+      scheduledFor: sendAt,
+      sentAt: sent ? sendAt : null,
+      deliveredAt: sent ? sendAt : null,
+      replies: (a.replies ?? []).map((reply, j) => ({
+        reply,
+        at: at(dayBefore(a.date), `1${8 + j}:00`),
+      })),
+    },
+  ];
 });
 
 const prescriptionMessage: MessageLog = {
@@ -506,7 +512,7 @@ const auditLog: AuditLog[] = [
     entity: 'visit_record',
     entityId: 'v3',
     action: 'visit_record.edited',
-    params: { patient: t('Ahmed Samir', 'أحمد سمير'), date: '2026-08-14' },
+    params: { patient: t('Sherif Mansour', 'شريف منصور'), date: '2026-08-14' },
     before: null,
     after: null,
     at: at(TODAY, '09:48'),
@@ -533,7 +539,7 @@ const auditLog: AuditLog[] = [
     entityId: 'a0',
     action: 'payment.gate_overridden',
     params: {
-      patient: t('Ahmed Samir', 'أحمد سمير'),
+      patient: t('Sherif Mansour', 'شريف منصور'),
       reason: t('insurance letter pending', 'خطاب التأمين قيد الإنهاء'),
     },
     before: null,
@@ -569,6 +575,7 @@ export function createSeed(): ClinicSnapshot {
       settings: {
         reminderLeadHours: 24,
         callListCutoffHours: 3,
+        noShowGraceMinutes: 15,
         secondReminderEnabled: false,
         defaultLanguage: 'en',
       },
@@ -597,7 +604,7 @@ export function createSeed(): ClinicSnapshot {
       {
         id: 'u-karim',
         clinicId: CLINIC,
-        name: t('Dr. Karim Abdelrahman', 'د. كريم عبد الرحمن'),
+        name: t('Dr. Karim Adel', 'د. كريم عادل'),
         shortName: t('Dr. Karim', 'د. كريم'),
         email: 'karim@nilecare.example',
         roles: ['admin', 'doctor'],
@@ -607,7 +614,7 @@ export function createSeed(): ClinicSnapshot {
       {
         id: 'u-salma',
         clinicId: CLINIC,
-        name: t('Dr. Salma El-Sayed', 'د. سلمى السيد'),
+        name: t('Dr. Salma Nabil', 'د. سلمى نبيل'),
         shortName: t('Dr. Salma', 'د. سلمى'),
         email: 'salma@nilecare.example',
         roles: ['doctor'],
@@ -615,13 +622,13 @@ export function createSeed(): ClinicSnapshot {
         active: true,
       },
       {
-        id: 'u-hany',
+        id: 'u-dina',
         clinicId: CLINIC,
-        name: t('Dr. Hany Fouad', 'د. هاني فؤاد'),
-        shortName: t('Dr. Hany', 'د. هاني'),
-        email: 'hany@nilecare.example',
+        name: t('Dr. Dina Farouk', 'د. دينا فاروق'),
+        shortName: t('Dr. Dina', 'د. دينا'),
+        email: 'dina@nilecare.example',
         roles: ['doctor'],
-        gender: 'M',
+        gender: 'F',
         active: true,
       },
     ],

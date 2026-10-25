@@ -66,7 +66,7 @@ export function DemoLoginScreen({ onSignedIn }: { onSignedIn(role: Role): void }
           {t('signIn')}
         </button>
       </div>
-      <DemoFooter fixed />
+      <DemoFooter fixed clockControls={false} />
     </div>
   );
 }

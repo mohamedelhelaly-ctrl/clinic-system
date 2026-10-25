@@ -34,3 +34,20 @@
     margin-top: 16px;
   }
 }
+.demo-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.demo-panel {
+  border-style: dashed;
+}
+.demo-panel .chip[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+label.demo select {
+  min-height: 44px;
+}

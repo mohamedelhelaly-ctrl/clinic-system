@@ -1,5 +1,5 @@
 import type { AuthService } from '../auth';
-import type { Clock, Language } from '../domain';
+import type { AppointmentId, Clock, Language, PatientReply } from '../domain';
 import type { ClinicRepository } from '../data';
 import {
   localStorageSnapshotStorage,
@@ -8,7 +8,7 @@ import {
   MockWhatsAppProvider,
 } from '../data/mock';
 import { DemoAuthService } from './demoAuth';
-import { fixedClock } from './fixedClock';
+import { DemoClock } from './demoClock';
 import { parseDemoParams, stripResetParam } from './params';
 import { createSeed } from './seed';
 
@@ -19,35 +19,54 @@ export interface DemoEnvironment {
   initialLanguage: Language | null;
   demo: {
     auth: DemoAuthService;
+    clock: DemoClock;
     reset(): void;
+    /** Moves the demo clock, then lets the simulated scheduler catch up. */
+    advance(move: (clock: DemoClock) => void): Promise<void>;
+    /** Simulates the patient's WhatsApp quick reply to the reminder. */
+    reply(appointmentId: AppointmentId, reply: PatientReply): Promise<void>;
   };
 }
 
 /**
- * Wires the demo: mock repository on seeded data, fixed clock, role sign-in
- * and URL parameters. Production replaces this one function.
+ * Wires the demo: mock repository on seeded data, movable demo clock, role
+ * sign-in and URL parameters. Production replaces this one function.
  */
 export function createDemoEnvironment(search = window.location.search): DemoEnvironment {
   const params = parseDemoParams(search);
   const storage = localStorageSnapshotStorage('clinic-demo:data');
-  if (params.reset) storage.clear();
+  if (params.reset) {
+    storage.clear();
+    DemoClock.clearStored();
+  }
+  const clock = new DemoClock();
   const repository = new MockClinicRepository({
     seed: createSeed,
-    clock: fixedClock,
+    clock,
     storage,
     whatsapp: new MockWhatsAppProvider(),
     renderer: new MockPrescriptionRenderer(),
   });
   const auth = new DemoAuthService(params.role);
   stripResetParam();
+  void repository.demo.runScheduledJobs();
   return {
     repository,
     auth,
-    clock: fixedClock,
+    clock,
     initialLanguage: params.lang,
     demo: {
       auth,
-      reset: () => repository.reset(),
+      clock,
+      reset: () => {
+        clock.reset();
+        repository.reset();
+      },
+      advance: async (move) => {
+        move(clock);
+        await repository.demo.runScheduledJobs();
+      },
+      reply: (appointmentId, reply) => repository.demo.simulatePatientReply(appointmentId, reply),
     },
   };
 }
