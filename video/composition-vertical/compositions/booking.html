@@ -1,0 +1,453 @@
+<template>
+  <style>
+/*
+ * Pulse brand tokens for the promo video.
+ *
+ * The base teal is the brand colour. The others are derived from it in HSL,
+ * keeping its hue (179.5°) and changing lightness and saturation:
+ *
+ *   --teal       #0e7c7b  base       HSL(179.5, 80%, 27%)
+ *   --teal-dark  #094e4d  darker     HSL(179.5, 80%, 17%)   caption text, title-card text
+ *   --teal-tint  #e9f6f6  light tint HSL(179.5, 42%, 94%)   title-card ground, soft fills
+ *   --bg         #f7fbfb  near-white with a faint teal tint, HSL(179.5, 30%, 97.5%), app-scene ground
+ *
+ * Contrast (WCAG 2.x):
+ *   white on --teal          5.01:1  (hook, end card, chips, flash pill)
+ *   --teal-dark on white     9.51:1  (caption pill)
+ *   --teal-dark on --teal-tint 8.59:1  (title cards)
+ */
+:root {
+  --teal: #0e7c7b;
+  --teal-dark: #094e4d;
+  --teal-tint: #e9f6f6;
+  --bg: #f7fbfb;
+  --white: #ffffff;
+  --ink: #102322;
+  --shadow-teal: rgba(9, 78, 77, 0.16);
+
+  --font-ar: "Cairo", sans-serif;
+  --font-latin: "Figtree", sans-serif;
+
+  /* 5% safe margin on every side at 1920x1080 */
+  --safe-x: 96px;
+  --safe-y: 54px;
+}
+
+@font-face {
+  font-family: "Cairo";
+  src: url("fonts/Cairo-VariableFont.ttf") format("truetype");
+  font-weight: 200 1000;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Figtree";
+  src: url("fonts/Figtree-VariableFont.ttf") format("truetype");
+  font-weight: 300 900;
+  font-display: block;
+}
+
+/* Vertical (1080x1920) components. build-vertical.mjs inlines ../composition/brand.css and then this file.
+ * Safe layout: nothing in y < 140 or y > 1660. Header 140-260, app area 280-1340, captions 1380-1660. */
+
+#root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-ar);
+  color: var(--ink);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(130% 70% at 50% 0%, #ffffff 0%, var(--bg) 55%, #eef6f6 100%);
+}
+
+/* ---- Header ------------------------------------------------------------- */
+
+.wordmark {
+  position: absolute;
+  left: 60px;
+  top: 170px;
+  height: 60px;
+  z-index: 30;
+}
+.wordmark svg { height: 100%; width: auto; display: block; }
+
+.chip {
+  position: absolute;
+  right: 60px;
+  top: 164px;
+  z-index: 30;
+  direction: rtl;
+  background: var(--teal);
+  color: var(--white);
+  font: 700 38px/1 var(--font-ar);
+  padding: 13px 38px 17px;
+  border-radius: 999px;
+}
+
+/* ---- App card (virtual camera) ----------------------------------------- */
+
+.card-app {
+  position: absolute;
+  left: 40px;
+  width: 1000px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(14, 124, 123, 0.14);
+  box-shadow: 0 30px 70px rgba(9, 78, 77, 0.16), 0 6px 18px rgba(9, 78, 77, 0.08);
+  z-index: 1;
+}
+.cam {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2560px;
+  height: 1440px;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.cam video,
+.cam img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2560px;
+  height: 1440px;
+}
+
+/* ---- Phone and laptop frames ------------------------------------------- */
+
+.phone {
+  position: absolute;
+  padding: 12px;
+  border-radius: 54px;
+  background: #142a2a;
+  box-shadow: 0 34px 80px rgba(9, 78, 77, 0.24), 0 6px 18px rgba(9, 78, 77, 0.1);
+}
+.phone .screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 42px;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+}
+.phone .screen video {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.laptop { position: absolute; }
+.laptop .lid {
+  padding: 16px;
+  border-radius: 22px 22px 6px 6px;
+  background: #142a2a;
+  box-shadow: 0 30px 70px rgba(9, 78, 77, 0.18);
+}
+.laptop .screen { position: relative; overflow: hidden; border-radius: 6px; background: #fff; }
+.laptop .screen img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.laptop .base {
+  height: 24px;
+  margin: 0 -40px;
+  border-radius: 0 0 22px 22px;
+  background: linear-gradient(#d9e3e3, #b9c8c8);
+  box-shadow: 0 16px 30px rgba(9, 78, 77, 0.14);
+}
+.laptop .base::after {
+  content: "";
+  display: block;
+  width: 160px;
+  height: 9px;
+  margin: 0 auto;
+  border-radius: 0 0 10px 10px;
+  background: #a9b9b9;
+}
+
+/* ---- Full-frame cards --------------------------------------------------- */
+
+.card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+  text-align: center;
+  z-index: 40;
+}
+.card.teal { background: radial-gradient(120% 80% at 50% 35%, #12908f 0%, var(--teal) 55%, #0b6766 100%); color: var(--white); }
+.card.tint { background: var(--teal-tint); color: var(--teal-dark); }
+.card-text {
+  text-wrap: balance;
+  font: 800 108px/1.4 var(--font-ar);
+  max-width: 960px;
+  padding: 0 0;
+}
+
+/* ---- Captions (no pill; dark teal on the near-white ground) ------------- */
+
+.cap {
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  top: 1380px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cap-text {
+  direction: rtl;
+  text-align: center;
+  max-width: 960px;
+  color: var(--teal-dark);
+  font: 800 58px/1.45 var(--font-ar);
+  text-wrap: balance;
+}
+.cap-text.flash {
+  background: var(--teal);
+  color: var(--white);
+  padding: 10px 40px 16px;
+  border-radius: 40px;
+}
+.cap-text .line { display: block; }
+
+/* ---- Messaging-app graphic, portrait (generic, no trademarked assets) -- */
+
+.chat {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: radial-gradient(130% 70% at 50% 0%, #ffffff 0%, var(--bg) 55%, #eef6f6 100%);
+}
+.chat .panel {
+  position: absolute;
+  left: 40px;
+  top: 280px;
+  width: 1000px;
+  height: 1060px;
+  border-radius: 34px;
+  overflow: hidden;
+  border: 1px solid rgba(14, 124, 123, 0.14);
+  box-shadow: 0 30px 70px rgba(9, 78, 77, 0.16), 0 6px 18px rgba(9, 78, 77, 0.08);
+}
+.msg-app {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  direction: rtl;
+  font-family: var(--font-ar);
+  background-color: #edf1ee;
+  background-image: radial-gradient(rgba(16, 35, 34, 0.05) 1.8px, transparent 1.9px);
+  background-size: 28px 28px;
+}
+.msg-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 30px;
+  background: #f6f8f7;
+  border-bottom: 1px solid rgba(16, 35, 34, 0.08);
+}
+.msg-head .avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--teal-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.msg-head .name { font: 700 42px/1.2 var(--font-ar); color: #102322; }
+.msg-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 22px;
+  padding: 28px 20px;
+}
+.bubble {
+  max-width: 960px;
+  padding: 20px 30px 14px;
+  border-radius: 30px;
+  font: 600 48px/1.5 var(--font-ar);
+  color: #142322;
+  box-shadow: 0 1px 2px rgba(16, 35, 34, 0.14);
+}
+.bubble.out { align-self: flex-start; background: #d5f5cb; }
+.bubble.in { align-self: flex-end; background: #ffffff; }
+.bubble .meta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  direction: ltr;
+  margin-top: 6px;
+  font: 500 28px/1 var(--font-latin);
+  color: #6b7a78;
+}
+.bubble .ticks { width: 36px; height: 22px; display: block; }
+.bubble .actions {
+  display: flex;
+  margin: 20px -30px -14px;
+  border-top: 1px solid rgba(16, 35, 34, 0.1);
+}
+.bubble .actions span {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  text-align: center;
+  padding: 26px 0 32px;
+  font: 800 52px/1 var(--font-ar);
+  color: var(--teal);
+}
+.bubble .actions span + span { border-right: 1px solid rgba(16, 35, 34, 0.1); }
+.bubble .actions .ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 640px;
+  height: 640px;
+  margin: -320px 0 0 -320px;
+  border-radius: 50%;
+  background: rgba(14, 124, 123, 0.22);
+}
+.file {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 24px 28px;
+  border-radius: 22px;
+  background: #f2f5f4;
+}
+.file .doc {
+  flex: none;
+  width: 110px;
+  height: 136px;
+  border-radius: 12px;
+  background: #d9483b;
+  color: #fff;
+  font: 800 32px/136px var(--font-latin);
+  text-align: center;
+}
+.file .fname { font: 800 50px/1.35 var(--font-ar); color: #142322; }
+.file .ftype { font: 600 30px/1.2 var(--font-latin); color: #6b7a78; }
+.msg-input {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 24px 28px;
+}
+.msg-input .field { flex: 1; height: 88px; border-radius: 44px; background: #fff; }
+.msg-input .send {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #22a55a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- End card ------------------------------------------------------------ */
+
+.end-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 960px;
+}
+.end-stack .logo { width: 360px; }
+.end-stack .logo svg { width: 100%; height: auto; display: block; }
+.end-stack .tagline { font: 800 64px/1.4 var(--font-ar); }
+.end-stack .demo { font: 700 52px/1.45 var(--font-ar); }
+.end-stack .contact {
+  margin-top: 30px;
+  width: 960px;
+  direction: rtl;
+  background: var(--white);
+  color: var(--teal-dark);
+  padding: 30px 40px 38px;
+  border-radius: 64px;
+  box-shadow: 0 18px 44px rgba(4, 40, 40, 0.28);
+}
+.end-stack .contact .lead { display: block; font: 800 60px/1.4 var(--font-ar); }
+.end-stack .contact .num { display: block; direction: ltr; font: 800 104px/1.15 var(--font-latin); letter-spacing: 0.01em; }
+.credit {
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  top: 1590px;
+  text-align: center;
+  direction: ltr;
+  font: 600 28px/1.3 var(--font-latin);
+  color: #ffffff;
+  z-index: 41;
+}
+
+/* Shown only when the brand fonts failed to load (see index.html). */
+#font-error {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  background: #c62828;
+  color: #fff;
+  font: 700 56px/1.2 monospace;
+  text-align: center;
+}
+
+  </style>
+  <div id="root" data-composition-id="booking" data-width="1080" data-height="1920">
+    <div class="scene" id="booking-scene">
+      <div class="wordmark" data-layout-allow-overlap><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 262 80" role="img" aria-label="Pulse" direction="ltr" style="direction:ltr"><path d="M4 41 H22 L30 22 L40 60 L48 41 H70" fill="none" stroke="#0e7c7b" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><text x="74" y="62" direction="ltr" text-anchor="start" font-family="Figtree, sans-serif" font-weight="800" font-size="64" letter-spacing="-1.5" fill="#0e7c7b">Pulse</text></svg></div>
+      <div id="booking-chip0" class="chip clip" data-start="2.2" data-duration="13.1" data-track-index="4">الحجز</div>
+      <div class="card-app" id="booking-card" style="top:310px;height:1000px">
+        <div class="cam-wrap" id="booking-p1-w" style="position:absolute;inset:0;z-index:2"><div style="position:absolute;left:50%;top:50%;width:0;height:0"><div class="cam" id="booking-p1-cam"><video id="booking-p1" class="clip" src="assets/clips/S03a-register.mp4" data-start="2.2" data-duration="5.3" data-media-start="1.3" data-track-index="1" data-hf-media-start-basis="local" muted playsinline style="z-index:1"></video></div></div></div>
+        <div class="cam-wrap" id="booking-p2-w" style="position:absolute;inset:0;z-index:3"><div style="position:absolute;left:50%;top:50%;width:0;height:0"><div class="cam" id="booking-p2-cam"><video id="booking-p2" class="clip" src="assets/clips/S03b-book.mp4" data-start="7.2" data-duration="5.4" data-media-start="1.6" data-track-index="1" data-hf-media-start-basis="local" muted playsinline style="z-index:1"></video></div></div></div>
+        <div class="cam-wrap" id="booking-p3-w" style="position:absolute;inset:0;z-index:4"><div style="position:absolute;left:50%;top:50%;width:0;height:0"><div class="cam" id="booking-p3-cam"><video id="booking-p3" class="clip" src="assets/clips/S03c-roster-scheduled.mp4" data-start="12.3" data-duration="3" data-media-start="0" data-track-index="1" data-hf-media-start-basis="local" muted playsinline style="z-index:1"></video></div></div></div>
+      </div>
+      <div id="booking-p0" class="chat clip" data-start="0" data-duration="2.5" data-track-index="2">
+        <div class="panel"><div class="msg-app">
+      <div class="msg-head">
+        <svg width="42" height="42" viewBox="0 0 24 24"><path d="M9 5 L16 12 L9 19" fill="none" stroke="#102322" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="avatar"><svg width="48" height="48" viewBox="0 0 26 26"><circle cx="13" cy="9" r="5" fill="#0e7c7b"/><path d="M3 24 C4 17 22 17 23 24 Z" fill="#0e7c7b"/></svg></div>
+        <div class="name">عيادة نايل كير</div>
+      </div>
+      <div class="msg-body" id="booking-p0-body"><div class="bubble out" id="booking-p0-b1">السلام عليكم، عايز أحجز كشف بكرة<div class="meta" data-layout-ignore>10:12 <svg class="ticks" id="booking-p0-t1g" viewBox="0 0 18 11"><path d="M1 6 L4.5 9.5 L11 2" fill="none" stroke="#8a9795" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 9.5 L7 9.9 L16.5 1.5" fill="none" stroke="#8a9795" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="ticks" id="booking-p0-t1b" viewBox="0 0 18 11" style="display:none"><path d="M1 6 L4.5 9.5 L11 2" fill="none" stroke="#3d9be0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 9.5 L7 9.9 L16.5 1.5" fill="none" stroke="#3d9be0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+      <div class="msg-input"><div class="field"></div><div class="send"><svg width="42" height="42" viewBox="0 0 24 24"><path d="M3 12 L21 4 L15 20 L11 13 Z" fill="#fff"/></svg></div></div>
+    </div></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#booking-scene", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none" }, 0);
+    tl.to("#booking-p0", {opacity:0, duration:0.3, ease:"none"}, 2.2);
+    tl.fromTo("#booking-p0-b1", {opacity:0, y:34, scale:0.96}, {opacity:1, y:0, scale:1, duration:0.4, ease:"power3.out"}, 0.35);
+    tl.set("#booking-p0-t1g", {display:"none"}, 1.3); tl.set("#booking-p0-t1b", {display:"block"}, 1.3);
+    tl.set("#booking-p1-cam", {"x":-878.5,"y":-504,"scale":0.7}, 2.2);
+    tl.to("#booking-p1-cam", {...{"x":-1050,"y":-1012.2,"scale":1.05}, duration:0.8, ease:"power2.inOut"}, 4);
+    tl.fromTo("#booking-p2-w", {opacity:0}, {opacity:1, duration:0.3, ease:"none"}, 7.2);
+    tl.set("#booking-p2-cam", {"x":-778.1,"y":-434,"scale":0.62}, 7.2);
+    tl.to("#booking-p2-cam", {...{"x":-908.3,"y":-512.74,"scale":0.62}, duration:0.8, ease:"power2.inOut"}, 10.8);
+    tl.fromTo("#booking-p3-w", {opacity:0}, {opacity:1, duration:0.3, ease:"none"}, 12.3);
+    tl.set("#booking-p3-cam", {"x":-908.3,"y":-512.74,"scale":0.62}, 12.3);
+    tl.to("#booking-p3-cam", {...{"x":-1750,"y":-1060,"scale":1}, duration:0.8, ease:"power2.inOut"}, 12.9);
+    tl.set("#booking-card", {"top":310,"height":1000}, 0);
+    tl.to("#booking-card", {...{"top":430,"height":760}, duration:0.5, ease:"power2.inOut"}, 7.2);
+    window.__timelines["booking"] = tl;
+  </script>
+</template>

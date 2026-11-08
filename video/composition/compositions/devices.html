@@ -1,0 +1,411 @@
+<template>
+  <style>
+/*
+ * Pulse brand tokens for the promo video.
+ *
+ * The base teal is the brand colour. The others are derived from it in HSL,
+ * keeping its hue (179.5°) and changing lightness and saturation:
+ *
+ *   --teal       #0e7c7b  base       HSL(179.5, 80%, 27%)
+ *   --teal-dark  #094e4d  darker     HSL(179.5, 80%, 17%)   caption text, title-card text
+ *   --teal-tint  #e9f6f6  light tint HSL(179.5, 42%, 94%)   title-card ground, soft fills
+ *   --bg         #f7fbfb  near-white with a faint teal tint, HSL(179.5, 30%, 97.5%), app-scene ground
+ *
+ * Contrast (WCAG 2.x):
+ *   white on --teal          5.01:1  (hook, end card, chips, flash pill)
+ *   --teal-dark on white     9.51:1  (caption pill)
+ *   --teal-dark on --teal-tint 8.59:1  (title cards)
+ */
+:root {
+  --teal: #0e7c7b;
+  --teal-dark: #094e4d;
+  --teal-tint: #e9f6f6;
+  --bg: #f7fbfb;
+  --white: #ffffff;
+  --ink: #102322;
+  --shadow-teal: rgba(9, 78, 77, 0.16);
+
+  --font-ar: "Cairo", sans-serif;
+  --font-latin: "Figtree", sans-serif;
+
+  /* 5% safe margin on every side at 1920x1080 */
+  --safe-x: 96px;
+  --safe-y: 54px;
+}
+
+@font-face {
+  font-family: "Cairo";
+  src: url("fonts/Cairo-VariableFont.ttf") format("truetype");
+  font-weight: 200 1000;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Figtree";
+  src: url("fonts/Figtree-VariableFont.ttf") format("truetype");
+  font-weight: 300 900;
+  font-display: block;
+}
+
+/* Shared components. build.mjs inlines this (after brand.css) into every scene. */
+
+#root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-ar);
+  color: var(--ink);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 0%, #ffffff 0%, var(--bg) 55%, #eef6f6 100%);
+}
+
+/* ---- Corner marks -------------------------------------------------------- */
+
+.wordmark {
+  position: absolute;
+  left: var(--safe-x);
+  top: var(--safe-y);
+  height: 40px;
+  z-index: 30;
+}
+.wordmark svg { height: 100%; width: auto; display: block; }
+
+.chip {
+  position: absolute;
+  right: var(--safe-x);
+  top: var(--safe-y);
+  z-index: 30;
+  direction: rtl;
+  background: var(--teal);
+  color: var(--white);
+  font: 700 28px/1 var(--font-ar);
+  padding: 9px 28px 12px;
+  border-radius: 999px;
+}
+
+/* ---- Desktop window ------------------------------------------------------ */
+
+.window {
+  position: absolute;
+  left: 288px;           /* 1344 px wide = 70% of 1920, centred */
+  top: 100px;
+  width: 1344px;
+  height: 756px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(14, 124, 123, 0.14);
+  box-shadow: 0 34px 80px rgba(9, 78, 77, 0.16), 0 6px 18px rgba(9, 78, 77, 0.08);
+  z-index: 1;
+}
+.zoom {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.window video,
+.screen video,
+.screen img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Phone and laptop frames -------------------------------------------- */
+
+.phone {
+  position: absolute;
+  padding: 12px;
+  border-radius: 54px;
+  background: #142a2a;
+  box-shadow: 0 34px 80px rgba(9, 78, 77, 0.22), 0 6px 18px rgba(9, 78, 77, 0.1);
+}
+.phone .screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 42px;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+}
+
+.laptop { position: absolute; }
+.laptop .lid {
+  padding: 16px;
+  border-radius: 22px 22px 6px 6px;
+  background: #142a2a;
+  box-shadow: 0 30px 70px rgba(9, 78, 77, 0.18);
+}
+.laptop .screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+}
+.laptop .base {
+  height: 24px;
+  margin: 0 -60px;
+  border-radius: 0 0 22px 22px;
+  background: linear-gradient(#d9e3e3, #b9c8c8);
+  box-shadow: 0 16px 30px rgba(9, 78, 77, 0.14);
+}
+.laptop .base::after {
+  content: "";
+  display: block;
+  width: 180px;
+  height: 9px;
+  margin: 0 auto;
+  border-radius: 0 0 10px 10px;
+  background: #a9b9b9;
+}
+
+/* ---- Full-frame cards ---------------------------------------------------- */
+
+.card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+  text-align: center;
+  z-index: 40;
+}
+.card.teal { background: radial-gradient(110% 100% at 50% 30%, #12908f 0%, var(--teal) 55%, #0b6766 100%); color: var(--white); }
+.card.tint { background: var(--teal-tint); color: var(--teal-dark); }
+.card-text {
+  font: 800 92px/1.35 var(--font-ar);
+  max-width: 1728px;
+  padding: 0 var(--safe-x);
+}
+.card-text .w { display: inline-block; }
+
+/* ---- Captions ------------------------------------------------------------ */
+
+.cap {
+  position: absolute;
+  left: var(--safe-x);
+  right: var(--safe-x);
+  bottom: var(--safe-y);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.pill {
+  direction: rtl;
+  text-align: start;
+  max-width: 1728px;
+  background: var(--white);
+  color: var(--teal-dark);
+  font: 700 42px/1.5 var(--font-ar);
+  padding: 13px 46px 15px;
+  border-radius: 48px;
+  border: 2px solid rgba(14, 124, 123, 0.16);
+  box-shadow: 0 12px 34px rgba(9, 78, 77, 0.14);
+}
+.pill.flash { background: var(--teal); color: var(--white); border-color: var(--teal); }
+.pill.small { font-size: 34px; padding: 10px 38px 12px; }
+.pill .line { display: block; }
+
+/* ---- Messaging-app graphic (generic, no trademarked assets) ------------- */
+
+/* A chat panel in the same slot as the app window, large enough to read on a phone. */
+.chat {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: radial-gradient(120% 90% at 50% 0%, #ffffff 0%, var(--bg) 55%, #eef6f6 100%);
+}
+.chat .panel {
+  position: absolute;
+  left: 528px;
+  top: 100px;
+  width: 864px;
+  height: 756px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(14, 124, 123, 0.14);
+  box-shadow: 0 34px 80px rgba(9, 78, 77, 0.16), 0 6px 18px rgba(9, 78, 77, 0.08);
+}
+.msg-app {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  direction: rtl;
+  font-family: var(--font-ar);
+  background-color: #edf1ee;
+  background-image: radial-gradient(rgba(16, 35, 34, 0.05) 1.6px, transparent 1.7px);
+  background-size: 24px 24px;
+}
+.msg-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 26px;
+  background: #f6f8f7;
+  border-bottom: 1px solid rgba(16, 35, 34, 0.08);
+}
+.msg-head .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--teal-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.msg-head .name { font: 700 30px/1.2 var(--font-ar); color: #102322; }
+.msg-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 24px 30px;
+}
+.bubble {
+  max-width: 80%;
+  padding: 14px 22px 10px;
+  border-radius: 22px;
+  font: 600 32px/1.55 var(--font-ar);
+  color: #142322;
+  box-shadow: 0 1px 2px rgba(16, 35, 34, 0.14);
+}
+.bubble.out { align-self: flex-start; background: #d5f5cb; }
+.bubble.in { align-self: flex-end; background: #ffffff; }
+.bubble .meta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  direction: ltr;
+  margin-top: 4px;
+  font: 500 19px/1 var(--font-latin);
+  color: #6b7a78;
+}
+.bubble .ticks { width: 26px; height: 16px; display: block; }
+.bubble .actions {
+  display: flex;
+  margin: 14px -22px -10px;
+  border-top: 1px solid rgba(16, 35, 34, 0.1);
+}
+.bubble .actions span {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  text-align: center;
+  padding: 14px 0 18px;
+  font: 700 32px/1 var(--font-ar);
+  color: var(--teal);
+}
+.bubble .actions span + span { border-right: 1px solid rgba(16, 35, 34, 0.1); }
+.bubble .actions .ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 520px;
+  height: 520px;
+  margin: -260px 0 0 -260px;
+  border-radius: 50%;
+  background: rgba(14, 124, 123, 0.22);
+}
+.file {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #f2f5f4;
+}
+.file .doc {
+  flex: none;
+  width: 64px;
+  height: 80px;
+  border-radius: 8px;
+  background: #d9483b;
+  color: #fff;
+  font: 800 19px/80px var(--font-latin);
+  text-align: center;
+}
+.file .fname { font: 700 32px/1.4 var(--font-ar); color: #142322; }
+.file .ftype { font: 600 19px/1.2 var(--font-latin); color: #6b7a78; }
+.msg-input {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px 22px;
+}
+.msg-input .field { flex: 1; height: 64px; border-radius: 32px; background: #fff; }
+.msg-input .send {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #22a55a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- End card ------------------------------------------------------------ */
+
+.end-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+}
+.end-stack .logo { height: 118px; }
+.end-stack .logo svg { height: 100%; width: auto; display: block; }
+.end-stack .tagline { font: 700 54px/1.4 var(--font-ar); }
+.end-stack .demo { font: 600 38px/1.5 var(--font-ar); }
+.end-stack .contact {
+  margin-top: 18px;
+  direction: rtl;
+  background: var(--white);
+  color: var(--teal-dark);
+  font: 800 58px/1.4 var(--font-ar);
+  padding: 18px 56px 22px;
+  border-radius: 999px;
+  box-shadow: 0 16px 40px rgba(4, 40, 40, 0.25);
+}
+.end-stack .contact .num { font-family: var(--font-latin); font-weight: 800; letter-spacing: 0.01em; }
+
+/* Shown only when the brand fonts failed to load (see index.html). */
+#font-error {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  background: #c62828;
+  color: #fff;
+  font: 700 64px/1.2 monospace;
+}
+
+  </style>
+  <div id="root" data-composition-id="devices" data-width="1920" data-height="1080">
+    <div class="scene" id="devices-scene">
+      <div class="wordmark" data-layout-allow-overlap><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 262 80" role="img" aria-label="Pulse" direction="ltr" style="direction:ltr"><path d="M4 41 H22 L30 22 L40 60 L48 41 H70" fill="none" stroke="#0e7c7b" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><text x="74" y="62" direction="ltr" text-anchor="start" font-family="Figtree, sans-serif" font-weight="800" font-size="64" letter-spacing="-1.5" fill="#0e7c7b">Pulse</text></svg></div>
+      <div class="laptop" style="left:186px; top:150px; width:1072px">
+        <div class="lid"><div class="screen" style="width:1040px; height:585px"><img src="assets/stills/S10c-start.png" alt=""></div></div>
+        <div class="base"></div>
+      </div>
+      <div class="phone" style="left:1378px; top:96px; width:357px; height:744px"><div class="screen"><video id="devices-v0" class="clip" src="assets/clips/S10a-phone-roster.mp4" data-start="0" data-duration="2.5" data-media-start="0" data-track-index="1" data-hf-media-start-basis="local" muted playsinline style="z-index:1"></video><video id="devices-v1" class="clip" src="assets/clips/S10b-phone-booking.mp4" data-start="2.2" data-duration="3.3" data-media-start="2" data-track-index="1" data-hf-media-start-basis="local" muted playsinline style="z-index:2"></video></div></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#devices-scene", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none" }, 0);
+    tl.fromTo("#devices-v1", {opacity:0}, {opacity:1, duration:0.3, ease:"none"}, 2.2);
+    window.__timelines["devices"] = tl;
+  </script>
+</template>

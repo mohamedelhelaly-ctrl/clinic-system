@@ -1,5 +1,6 @@
-# Promo video (placeholder)
+# Promo video
 
-Reserved for the promotional video, built in a later task. Source footage can
-come from the demo recordings (`npm run record`, output in
-`demo-recording/output/videos`).
+The video itself is built in a later task. Its source clips are recorded with
+`npm run clips` (see `demo-recording/video-clips/README.md`) into
+`video/clips/`: the MP4s, posters and raw frames are generated and not in git;
+`manifest.json`, the contact sheets and `REPORT.md` are.

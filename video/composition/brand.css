@@ -1,0 +1,46 @@
+/*
+ * Pulse brand tokens for the promo video.
+ *
+ * The base teal is the brand colour. The others are derived from it in HSL,
+ * keeping its hue (179.5°) and changing lightness and saturation:
+ *
+ *   --teal       #0e7c7b  base       HSL(179.5, 80%, 27%)
+ *   --teal-dark  #094e4d  darker     HSL(179.5, 80%, 17%)   caption text, title-card text
+ *   --teal-tint  #e9f6f6  light tint HSL(179.5, 42%, 94%)   title-card ground, soft fills
+ *   --bg         #f7fbfb  near-white with a faint teal tint, HSL(179.5, 30%, 97.5%), app-scene ground
+ *
+ * Contrast (WCAG 2.x):
+ *   white on --teal          5.01:1  (hook, end card, chips, flash pill)
+ *   --teal-dark on white     9.51:1  (caption pill)
+ *   --teal-dark on --teal-tint 8.59:1  (title cards)
+ */
+:root {
+  --teal: #0e7c7b;
+  --teal-dark: #094e4d;
+  --teal-tint: #e9f6f6;
+  --bg: #f7fbfb;
+  --white: #ffffff;
+  --ink: #102322;
+  --shadow-teal: rgba(9, 78, 77, 0.16);
+
+  --font-ar: "Cairo", sans-serif;
+  --font-latin: "Figtree", sans-serif;
+
+  /* 5% safe margin on every side at 1920x1080 */
+  --safe-x: 96px;
+  --safe-y: 54px;
+}
+
+@font-face {
+  font-family: "Cairo";
+  src: url("fonts/Cairo-VariableFont.ttf") format("truetype");
+  font-weight: 200 1000;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Figtree";
+  src: url("fonts/Figtree-VariableFont.ttf") format("truetype");
+  font-weight: 300 900;
+  font-display: block;
+}

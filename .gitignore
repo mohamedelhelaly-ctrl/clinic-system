@@ -23,6 +23,11 @@ video/clips/raw/
 video/clips/.snapshots/
 video/clips/posters/
 
+# Promo composition: renders, HyperFrames state and sped-up clips (speedup.py) are generated
+video/composition/renders/
+video/composition/.hyperframes/
+video/composition/assets/clips/*.mp4
+
 # Logs
 *.log
 npm-debug.log*

@@ -1,0 +1,20 @@
+{
+  "enabledPlugins": {
+    "hyperframes@hyperframes": true,
+    "brag@brag": true
+  },
+  "extraKnownMarketplaces": {
+    "hyperframes": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/heygen-com/hyperframes.git"
+      }
+    },
+    "brag": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/latent-spaces/brag.git"
+      }
+    }
+  }
+}

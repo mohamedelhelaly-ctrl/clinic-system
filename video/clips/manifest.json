@@ -1,0 +1,949 @@
+{
+  "generated": "2026-10-25T15:53:06.297Z",
+  "capture": "Screenshot-based at deviceScaleFactor 2 (Chrome screencast is limited to CSS-pixel size), assembled by ffmpeg to constant 30 fps.",
+  "clips": [
+    {
+      "id": "S02-dashboard",
+      "scene": "Receptionist morning",
+      "description": "Home with the day counts and the roster; gentle scroll through the roster.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 5,
+      "briefTargetDuration": 5,
+      "duration": 5.07,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.9,
+      "file": "video/clips/S02-dashboard.mp4",
+      "poster": "video/clips/posters/S02-dashboard.png",
+      "snapshotNeeded": "reset",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 5.03,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 5.07,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S03a-register",
+      "scene": "Booking",
+      "description": "New appointment, search \"Ahmed Samir\" (no result), register him (phone, date of birth, gender, address, penicillin allergy), age calculated, save.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 22.5,
+      "briefTargetDuration": 7,
+      "duration": 23.1,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S03a-register.mp4",
+      "poster": "video/clips/posters/S03a-register.png",
+      "snapshotNeeded": "reset",
+      "snapshotProduced": "A-registered",
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": false,
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "duration": 22.57,
+          "error": "unstable across runs (durations 22.57, 23.1)"
+        },
+        {
+          "run": 2,
+          "passed": false,
+          "duration": 23.1,
+          "error": "unstable across runs (durations 22.57, 23.1)"
+        }
+      ],
+      "notes": "The search text carries over into Full name, so the name is not typed twice."
+    },
+    {
+      "id": "S03b-book",
+      "scene": "Booking",
+      "description": "Dr. Karim Adel, tomorrow, 11:00, reason \"Persistent cough\", save; Home opens on the booked day.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 10.5,
+      "briefTargetDuration": 7,
+      "duration": 10.53,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.9,
+      "file": "video/clips/S03b-book.mp4",
+      "poster": "video/clips/posters/S03b-book.png",
+      "snapshotNeeded": "A-registered",
+      "snapshotProduced": "A-booked",
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 10.5,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 10.53,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S03c-roster-scheduled",
+      "scene": "Booking",
+      "description": "Tomorrow's roster with Ahmed as Scheduled + Unpaid.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 3,
+      "briefTargetDuration": 3,
+      "duration": 3,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S03c-roster-scheduled.mp4",
+      "poster": "video/clips/posters/S03c-roster-scheduled.png",
+      "snapshotNeeded": "A-booked",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 3,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 3,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S04-reminder-confirmed",
+      "scene": "Reminder",
+      "description": "24 h before: Ahmed's details show the sent reminder; his WhatsApp Confirm arrives (simulated off-camera); status Confirmed; back to the roster.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 6,
+      "briefTargetDuration": 6,
+      "duration": 7.43,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.9,
+      "file": "video/clips/S04-reminder-confirmed.mp4",
+      "poster": "video/clips/posters/S04-reminder-confirmed.png",
+      "snapshotNeeded": "A-booked",
+      "snapshotProduced": "A-confirmed",
+      "setupOffCamera": true,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 7.2,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 7.43,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S05a-needs-call",
+      "scene": "No reply (branch)",
+      "description": "Timeline B: no reply by the cut-off; Ahmed flips from Scheduled to Needs call live.",
+      "actor": "receptionist",
+      "timeline": "B",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 4,
+      "briefTargetDuration": 4,
+      "duration": 4,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S05a-needs-call.mp4",
+      "poster": "video/clips/posters/S05a-needs-call.png",
+      "snapshotNeeded": "reset",
+      "snapshotProduced": "B-needs-call",
+      "setupOffCamera": true,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        }
+      ],
+      "notes": "Timeline B uses a 12 h cut-off (set in Settings off-camera) so the cut-off falls on Saturday evening; with the default 3 h it falls on Sunday morning and the roster day chip would move past Ahmed."
+    },
+    {
+      "id": "S05b-call-list",
+      "scene": "No reply (branch)",
+      "description": "Timeline B: Call list, Ahmed's card, call, \"Confirmed by phone\", card leaves; roster shows Confirmed.",
+      "actor": "receptionist",
+      "timeline": "B",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 9,
+      "briefTargetDuration": 6,
+      "duration": 9.23,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.9,
+      "file": "video/clips/S05b-call-list.mp4",
+      "poster": "video/clips/posters/S05b-call-list.png",
+      "snapshotNeeded": "B-needs-call",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 9.17,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 9.23,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S06a-arrival-gate",
+      "scene": "Arrival",
+      "description": "Appointment time: open Ahmed, Mark arrived, hold on \"Payment required before the consultation\".",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 6,
+      "briefTargetDuration": 6,
+      "duration": 6.03,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.4,
+      "file": "video/clips/S06a-arrival-gate.mp4",
+      "poster": "video/clips/posters/S06a-arrival-gate.png",
+      "snapshotNeeded": "A-confirmed",
+      "snapshotProduced": "A-arrived",
+      "setupOffCamera": true,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 6.03,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 6.03,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S06b-payment",
+      "scene": "Arrival",
+      "description": "Record payment 900 EGP cash; badge turns Paid and the payment message disappears.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 10,
+      "briefTargetDuration": 6,
+      "duration": 10.07,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S06b-payment.mp4",
+      "poster": "video/clips/posters/S06b-payment.png",
+      "snapshotNeeded": "A-arrived",
+      "snapshotProduced": "A-paid",
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 10.17,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 10.07,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S06c-packages",
+      "scene": "Payments",
+      "description": "Payments, Packages: the seeded package (8000 EGP, 10 visits, 7 left) and its progress.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 4,
+      "briefTargetDuration": 4,
+      "duration": 4,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S06c-packages.mp4",
+      "poster": "video/clips/posters/S06c-packages.png",
+      "snapshotNeeded": "A-paid",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S06d-lock-receptionist",
+      "scene": "Privacy",
+      "description": "Receptionist opens a patient with past visits: only \"Visit completed\" with the lock.",
+      "actor": "receptionist",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 6,
+      "briefTargetDuration": 4,
+      "duration": 6,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.2,
+      "file": "video/clips/S06d-lock-receptionist.mp4",
+      "poster": "video/clips/posters/S06d-lock-receptionist.png",
+      "snapshotNeeded": "A-paid",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 6,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 6,
+          "error": null
+        }
+      ],
+      "notes": "Uses the seeded patient Sherif Mansour (four past visits)."
+    },
+    {
+      "id": "S07a-doctor-dashboard",
+      "scene": "Doctor",
+      "description": "Doctor's Home shows only Dr. Karim Adel's patients.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 4,
+      "briefTargetDuration": 4,
+      "duration": 4,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.7,
+      "file": "video/clips/S07a-doctor-dashboard.mp4",
+      "poster": "video/clips/posters/S07a-doctor-dashboard.png",
+      "snapshotNeeded": "A-paid",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 4.03,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S07b-calendar-appointment",
+      "scene": "Doctor",
+      "description": "Calendar day view, click Ahmed's 11:00, details with the penicillin allergy warning.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 6,
+      "briefTargetDuration": 6,
+      "duration": 6.07,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S07b-calendar-appointment.mp4",
+      "poster": "video/clips/posters/S07b-calendar-appointment.png",
+      "snapshotNeeded": "A-paid",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 6.03,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 6.07,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S08a-visit-text",
+      "scene": "Consultation",
+      "description": "Start consultation, open the visit record, type complaint, diagnosis and treatment.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 13.5,
+      "briefTargetDuration": 7,
+      "duration": 13.47,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S08a-visit-text.mp4",
+      "poster": "video/clips/posters/S08a-visit-text.png",
+      "snapshotNeeded": "A-paid",
+      "snapshotProduced": "A-draft",
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 13.5,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 13.47,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S08b-prescription",
+      "scene": "Consultation",
+      "description": "Add prescription: Paracetamol and cough syrup rows; the preview fills in.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 17,
+      "briefTargetDuration": 7,
+      "duration": 17.03,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.9,
+      "file": "video/clips/S08b-prescription.mp4",
+      "poster": "video/clips/posters/S08b-prescription.png",
+      "snapshotNeeded": "A-draft",
+      "snapshotProduced": "A-rx",
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 17,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 17.03,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S08c-prescription-sent",
+      "scene": "Consultation",
+      "description": "Finalize and send via WhatsApp: Sent, then Delivered.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 4,
+      "briefTargetDuration": 4,
+      "duration": 4.2,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S08c-prescription-sent.mp4",
+      "poster": "video/clips/posters/S08c-prescription-sent.png",
+      "snapshotNeeded": "A-rx",
+      "snapshotProduced": "A-sent",
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 4.3,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 4.2,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S08d-complete",
+      "scene": "Consultation",
+      "description": "Save and complete visit; the appointment becomes Completed.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 3,
+      "briefTargetDuration": 3,
+      "duration": 4.33,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S08d-complete.mp4",
+      "poster": "video/clips/posters/S08d-complete.png",
+      "snapshotNeeded": "A-sent",
+      "snapshotProduced": "A-complete",
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": false,
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "duration": 4.57,
+          "error": "duration 4.57 s vs target 3 s"
+        },
+        {
+          "run": 2,
+          "passed": false,
+          "duration": 4.33,
+          "error": "unstable across runs (durations 4.57, 4.33)"
+        }
+      ],
+      "notes": "Completing opens the patient file; the Completed status is checked through window.__demo."
+    },
+    {
+      "id": "S09a-history-saved",
+      "scene": "History",
+      "description": "Ahmed's file: the new visit at the top of the timeline with the Prescription chip.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 4,
+      "briefTargetDuration": 4,
+      "duration": 4.03,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.9,
+      "file": "video/clips/S09a-history-saved.mp4",
+      "poster": "video/clips/posters/S09a-history-saved.png",
+      "snapshotNeeded": "A-complete",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 4.03,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S09b-return-history",
+      "scene": "Return visit",
+      "description": "Three months later, a follow-up is booked (off-camera); the doctor opens it: pinned penicillin allergy and the previous visit with its prescription, before the consultation.",
+      "actor": "doctor",
+      "timeline": "A",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 6,
+      "briefTargetDuration": 6,
+      "duration": 6,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 19.8,
+      "file": "video/clips/S09b-return-history.mp4",
+      "poster": "video/clips/posters/S09b-return-history.png",
+      "snapshotNeeded": "A-complete",
+      "snapshotProduced": "A-return",
+      "setupOffCamera": true,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 6,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 6,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S10a-phone-roster",
+      "scene": "Closing: mobile",
+      "description": "Phone: receptionist Home with stats cards, the roster as stacked cards and the bottom tab bar; gentle scroll.",
+      "actor": "receptionist",
+      "timeline": "-",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 4,
+      "briefTargetDuration": 4,
+      "duration": 4.03,
+      "resolution": "780x1688",
+      "fps": 30,
+      "captureFps": 29.9,
+      "file": "video/clips/S10a-phone-roster.mp4",
+      "poster": "video/clips/posters/S10a-phone-roster.png",
+      "snapshotNeeded": "reset",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 4.07,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 4.03,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S10b-phone-booking",
+      "scene": "Closing: mobile",
+      "description": "Phone: New appointment, search, choose a doctor, open the time-slot bottom sheet (stops before saving).",
+      "actor": "receptionist",
+      "timeline": "-",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 8.5,
+      "briefTargetDuration": 6,
+      "duration": 8.53,
+      "resolution": "780x1688",
+      "fps": 30,
+      "captureFps": 29.7,
+      "file": "video/clips/S10b-phone-booking.mp4",
+      "poster": "video/clips/posters/S10b-phone-booking.png",
+      "snapshotNeeded": "A-registered",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 8.57,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 8.53,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S10c-arabic-switch",
+      "scene": "Closing: Arabic",
+      "description": "Desktop English roster; the language button flips the whole UI to Arabic, right to left.",
+      "actor": "receptionist",
+      "timeline": "-",
+      "viewport": {
+        "width": 1440,
+        "height": 810
+      },
+      "deviceScaleFactor": 2,
+      "language": "en",
+      "targetDuration": 6,
+      "briefTargetDuration": 6,
+      "duration": 6.47,
+      "resolution": "2560x1440",
+      "fps": 30,
+      "captureFps": 20,
+      "file": "video/clips/S10c-arabic-switch.mp4",
+      "poster": "video/clips/posters/S10c-arabic-switch.png",
+      "snapshotNeeded": "A-paid",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": false,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 6.47,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 6.47,
+          "error": null
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "S10d-arabic-phone",
+      "scene": "Closing: Arabic",
+      "description": "Phone, Arabic: the roster right to left.",
+      "actor": "receptionist",
+      "timeline": "-",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 2,
+      "language": "ar",
+      "targetDuration": 4,
+      "briefTargetDuration": 4,
+      "duration": 4,
+      "resolution": "780x1688",
+      "fps": 30,
+      "captureFps": 29.8,
+      "file": "video/clips/S10d-arabic-phone.mp4",
+      "poster": "video/clips/posters/S10d-arabic-phone.png",
+      "snapshotNeeded": "A-paid",
+      "snapshotProduced": null,
+      "setupOffCamera": false,
+      "optional": true,
+      "passed": true,
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        },
+        {
+          "run": 2,
+          "passed": true,
+          "duration": 4,
+          "error": null
+        }
+      ],
+      "notes": ""
+    }
+  ]
+}

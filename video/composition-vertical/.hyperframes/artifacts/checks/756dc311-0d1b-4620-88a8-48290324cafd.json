@@ -1,0 +1,182 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 1,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "timeline_track_too_dense",
+        "severity": "warning",
+        "message": "Track 0 has 13 timed elements in this HTML file. Smaller sub-compositions keep timelines easier to read, iterate on, and diff.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "/Users/mohamedelhelaly/Documents/GitHub/clinic-system/video/composition-vertical/compositions/captions.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move coherent scene groups into smaller .html files and mount them from the parent with data-composition-src so the timeline stays easier to inspect, revise, and validate."
+      }
+    ],
+    "filesScanned": 14
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 2,
+    "findings": [
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 64.231,
+        "selector": "#doctor-chip0",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 860.34,
+          "top": 160,
+          "right": 982,
+          "bottom": 232,
+          "width": 121.66,
+          "height": 72
+        },
+        "containerSelector": "#consult-chip0",
+        "text": "الدكتور",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {
+          "data-start": "0",
+          "data-duration": "6.9",
+          "data-track-index": "4"
+        },
+        "sourceFile": "compositions/doctor.html",
+        "bbox": {
+          "x": 860.34,
+          "y": 160,
+          "width": 121.66,
+          "height": 72
+        },
+        "firstSeen": 64.231,
+        "lastSeen": 64.231,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          64.231
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 79.004,
+        "selector": "#consult-chip1",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 860.34,
+          "top": 160,
+          "right": 982,
+          "bottom": 232,
+          "width": 121.66,
+          "height": 72
+        },
+        "containerSelector": "#history-chip0",
+        "text": "الدكتور",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {
+          "data-start": "12.9",
+          "data-duration": "2.3",
+          "data-track-index": "4"
+        },
+        "sourceFile": "compositions/consult.html",
+        "bbox": {
+          "x": 860.34,
+          "y": 160,
+          "width": 121.66,
+          "height": 72
+        },
+        "firstSeen": 79.004,
+        "lastSeen": 79.004,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          79.004
+        ]
+      }
+    ],
+    "duration": 108.55,
+    "samples": [
+      6.031,
+      18.092,
+      30.153,
+      42.214,
+      54.275,
+      66.336,
+      78.397,
+      90.458,
+      102.519
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 2,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      6.031,
+      30.153,
+      54.275,
+      78.397,
+      102.519
+    ],
+    "checked": 15,
+    "passed": 15
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "step": 0.18100000000000005,
+    "samples": 599
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

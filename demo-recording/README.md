@@ -16,3 +16,6 @@ Videos land in `demo-recording/output/videos/<desktop|phone>/<actor>--<take>.web
 
 `@playwright/test` is pinned to the Chromium build installed on the machine;
 run `npx playwright install chromium` first on a fresh workstation.
+
+The clips for the promo video are recorded separately, by
+`npm run clips`; see `video-clips/README.md`. They do not use these takes.

@@ -1,0 +1,404 @@
+{
+  "_doc": [
+    "Virtual camera for the desktop clips (source 2560x1440) inside the vertical app card.",
+    "Keys are '<sceneId>/p<partIndex>' from scenes-vertical.mjs. Each key frame: t = seconds into the part (on-screen time),",
+    "cx, cy = source pixel at the centre of the card, s = scale (canvas px per source px), h = card height (card width is always 1000).",
+    "The camera arrives at each key frame at time t, moving for 'move' seconds before it (ease power2.inOut). The first key frame is the starting framing.",
+    "build-vertical.mjs refuses a key frame whose view would leave the source frame (s must be >= h/1440 and cx, cy within range).",
+    "Edit a scene's numbers here, then run: node build-vertical.mjs"
+  ],
+  "move": 0.8,
+  "card": {
+    "left": 40,
+    "width": 1000,
+    "areaTop": 280,
+    "areaHeight": 1060
+  },
+  "parts": {
+    "dashboard/p0": {
+      "clip": "S02-dashboard",
+      "key": "Roster rows with their status badges",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1552,
+          "cy": 800,
+          "s": 0.57,
+          "h": 700
+        },
+        {
+          "t": 2.4,
+          "cx": 1900,
+          "cy": 900,
+          "s": 0.95,
+          "h": 700
+        }
+      ]
+    },
+    "booking/p1": {
+      "clip": "S03a-register",
+      "key": "Register form with the auto-calculated age",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1255,
+          "cy": 720,
+          "s": 0.7,
+          "h": 1000
+        },
+        {
+          "t": 2.6,
+          "cx": 1000,
+          "cy": 964,
+          "s": 1.05,
+          "h": 1000
+        }
+      ]
+    },
+    "booking/p2": {
+      "clip": "S03b-book",
+      "key": "Doctor, slot and reason steps, then the roster result",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1255,
+          "cy": 700,
+          "s": 0.62,
+          "h": 760
+        },
+        {
+          "t": 4.4,
+          "cx": 1465,
+          "cy": 827,
+          "s": 0.62,
+          "h": 760
+        }
+      ]
+    },
+    "booking/p3": {
+      "clip": "S03c-roster-scheduled",
+      "key": "Ahmed's row with Scheduled and Unpaid",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1465,
+          "cy": 827,
+          "s": 0.62,
+          "h": 760
+        },
+        {
+          "t": 1.4,
+          "cx": 1750,
+          "cy": 1060,
+          "s": 1.0,
+          "h": 760
+        }
+      ]
+    },
+    "reminder/p2": {
+      "clip": "S04-reminder-confirmed",
+      "key": "Reminder and call log, then Confirmed on the roster",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1500,
+          "cy": 720,
+          "s": 0.49,
+          "h": 700
+        },
+        {
+          "t": 1.6,
+          "cx": 2060,
+          "cy": 520,
+          "s": 1.0,
+          "h": 700
+        },
+        {
+          "t": 3.85,
+          "cx": 1900,
+          "cy": 1040,
+          "s": 1.0,
+          "h": 700
+        }
+      ]
+    },
+    "noreply/p1": {
+      "clip": "S05a-needs-call",
+      "key": "Needs call badge",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1465,
+          "cy": 875,
+          "s": 0.62,
+          "h": 700
+        },
+        {
+          "t": 1.6,
+          "cx": 1900,
+          "cy": 1040,
+          "s": 1.0,
+          "h": 700
+        }
+      ]
+    },
+    "noreply/p2": {
+      "clip": "S05b-call-list",
+      "key": "Call list card and the Confirmed by phone button",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1165,
+          "cy": 912,
+          "s": 0.72,
+          "h": 760
+        }
+      ]
+    },
+    "noreply/p3": {
+      "clip": "S05b-call-list",
+      "key": "Marked Confirmed, then the roster",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1165,
+          "cy": 900,
+          "s": 0.72,
+          "h": 760
+        },
+        {
+          "t": 3.3,
+          "cx": 1900,
+          "cy": 1040,
+          "s": 1.0,
+          "h": 760
+        }
+      ]
+    },
+    "visitday/p1": {
+      "clip": "S06a-arrival-gate",
+      "key": "Payment required before the consultation",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1465,
+          "cy": 827,
+          "s": 0.62,
+          "h": 760
+        },
+        {
+          "t": 2.3,
+          "cx": 930,
+          "cy": 1040,
+          "s": 1.25,
+          "h": 1000
+        }
+      ]
+    },
+    "visitday/p2": {
+      "clip": "S06b-payment",
+      "key": "Payment form, then the Paid badge",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1130,
+          "cy": 815,
+          "s": 0.8,
+          "h": 1000
+        }
+      ]
+    },
+    "visitday/p3": {
+      "clip": "S06c-packages",
+      "key": "Package and its progress",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1100,
+          "cy": 884,
+          "s": 0.9,
+          "h": 1000
+        }
+      ]
+    },
+    "doctor/p0": {
+      "clip": "S07a-doctor-dashboard",
+      "key": "The doctor's roster",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1430,
+          "cy": 700,
+          "s": 0.55,
+          "h": 620
+        },
+        {
+          "t": 1.5,
+          "cx": 1800,
+          "cy": 900,
+          "s": 0.95,
+          "h": 620
+        }
+      ]
+    },
+    "doctor/p1": {
+      "clip": "S07b-calendar-appointment",
+      "key": "Ahmed's appointment and the penicillin warning",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1800,
+          "cy": 900,
+          "s": 0.95,
+          "h": 620
+        },
+        {
+          "t": 1.8,
+          "cx": 1574,
+          "cy": 844,
+          "s": 0.52,
+          "h": 620
+        },
+        {
+          "t": 3.2,
+          "cx": 1100,
+          "cy": 700,
+          "s": 0.85,
+          "h": 1000
+        }
+      ]
+    },
+    "consult/p0": {
+      "clip": "S08a-visit-text",
+      "key": "The three visit boxes while text is typed",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1118,
+          "cy": 830,
+          "s": 0.85,
+          "h": 1000
+        },
+        {
+          "t": 1.4,
+          "cx": 990,
+          "cy": 830,
+          "s": 1.15,
+          "h": 1000
+        }
+      ]
+    },
+    "consult/p1": {
+      "clip": "S08b-prescription",
+      "key": "Medication rows, then the prescription preview",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1135,
+          "cy": 520,
+          "s": 0.82,
+          "h": 620
+        },
+        {
+          "t": 2.0,
+          "cx": 2034,
+          "cy": 640,
+          "s": 0.95,
+          "h": 1000
+        }
+      ]
+    },
+    "consult/p2": {
+      "clip": "S08c-prescription-sent",
+      "key": "Sent, then Delivered",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 2034,
+          "cy": 900,
+          "s": 0.95,
+          "h": 1000
+        }
+      ]
+    },
+    "consult/p4": {
+      "clip": "S08d-complete",
+      "key": "Save and complete (the clip shows Delivered and the 'Visit saved to history' toast; no Completed badge is visible)",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1100,
+          "cy": 815,
+          "s": 0.8,
+          "h": 1000
+        }
+      ]
+    },
+    "history/p0": {
+      "clip": "S09a-history-saved",
+      "key": "The visit at the top of the history with the Prescription chip",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 2060,
+          "cy": 600,
+          "s": 1.0,
+          "h": 760
+        }
+      ]
+    },
+    "history/p1": {
+      "clip": "S06d-lock-receptionist",
+      "key": "The lock and the Visit completed lines (privacy)",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1500,
+          "cy": 636,
+          "s": 0.55,
+          "h": 700
+        },
+        {
+          "t": 1.9,
+          "cx": 2143,
+          "cy": 790,
+          "s": 1.2,
+          "h": 1000
+        }
+      ]
+    },
+    "history/p3": {
+      "clip": "S09b-return-history",
+      "key": "The pinned allergy and the previous visit",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1465,
+          "cy": 827,
+          "s": 0.62,
+          "h": 760
+        },
+        {
+          "t": 2.3,
+          "cx": 2105,
+          "cy": 985,
+          "s": 1.1,
+          "h": 1000
+        }
+      ]
+    },
+    "arabic/desktop": {
+      "clip": "S10c-arabic-switch",
+      "key": "The whole app switching to Arabic",
+      "keys": [
+        {
+          "t": 0,
+          "cx": 1280,
+          "cy": 720,
+          "s": 0.45,
+          "h": 620
+        }
+      ]
+    }
+  }
+}

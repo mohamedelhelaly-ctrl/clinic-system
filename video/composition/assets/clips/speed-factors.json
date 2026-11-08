@@ -1,0 +1,140 @@
+{
+  "S02-dashboard": {
+    "speed": 1.0,
+    "source": 5.07,
+    "out": 5.07,
+    "resolution": "2560x1440"
+  },
+  "S03a-register": {
+    "speed": 3.0,
+    "source": 23.1,
+    "out": 7.7,
+    "resolution": "2560x1440"
+  },
+  "S03b-book": {
+    "speed": 1.5,
+    "source": 10.53,
+    "out": 7.02,
+    "resolution": "2560x1440"
+  },
+  "S03c-roster-scheduled": {
+    "speed": 1.0,
+    "source": 3,
+    "out": 3.0,
+    "resolution": "2560x1440"
+  },
+  "S04-reminder-confirmed": {
+    "speed": 1.24,
+    "source": 7.43,
+    "out": 5.99,
+    "resolution": "2560x1440"
+  },
+  "S05a-needs-call": {
+    "speed": 1.0,
+    "source": 4,
+    "out": 4.0,
+    "resolution": "2560x1440"
+  },
+  "S05b-call-list": {
+    "speed": 1.54,
+    "source": 9.23,
+    "out": 5.99,
+    "resolution": "2560x1440"
+  },
+  "S06a-arrival-gate": {
+    "speed": 1.0,
+    "source": 6.03,
+    "out": 6.03,
+    "resolution": "2560x1440"
+  },
+  "S06b-payment": {
+    "speed": 1.68,
+    "source": 10.07,
+    "out": 5.99,
+    "resolution": "2560x1440"
+  },
+  "S06c-packages": {
+    "speed": 1.0,
+    "source": 4,
+    "out": 4.0,
+    "resolution": "2560x1440"
+  },
+  "S06d-lock-receptionist": {
+    "speed": 1.5,
+    "source": 6,
+    "out": 4.0,
+    "resolution": "2560x1440"
+  },
+  "S07a-doctor-dashboard": {
+    "speed": 1.0,
+    "source": 4,
+    "out": 4.0,
+    "resolution": "2560x1440"
+  },
+  "S07b-calendar-appointment": {
+    "speed": 1.0,
+    "source": 6.07,
+    "out": 6.07,
+    "resolution": "2560x1440"
+  },
+  "S08a-visit-text": {
+    "speed": 1.92,
+    "source": 13.47,
+    "out": 7.02,
+    "resolution": "2560x1440"
+  },
+  "S08b-prescription": {
+    "speed": 2.43,
+    "source": 17.03,
+    "out": 7.01,
+    "resolution": "2560x1440"
+  },
+  "S08c-prescription-sent": {
+    "speed": 1.0,
+    "source": 4.2,
+    "out": 4.2,
+    "resolution": "2560x1440"
+  },
+  "S08d-complete": {
+    "speed": 1.44,
+    "source": 4.33,
+    "out": 3.01,
+    "resolution": "2560x1440"
+  },
+  "S09a-history-saved": {
+    "speed": 1.0,
+    "source": 4.03,
+    "out": 4.03,
+    "resolution": "2560x1440"
+  },
+  "S09b-return-history": {
+    "speed": 1.0,
+    "source": 6,
+    "out": 6.0,
+    "resolution": "2560x1440"
+  },
+  "S10a-phone-roster": {
+    "speed": 1.0,
+    "source": 4.03,
+    "out": 4.03,
+    "resolution": "780x1688"
+  },
+  "S10b-phone-booking": {
+    "speed": 1.42,
+    "source": 8.53,
+    "out": 6.01,
+    "resolution": "780x1688"
+  },
+  "S10c-arabic-switch": {
+    "speed": 1.0,
+    "source": 6.47,
+    "out": 6.47,
+    "resolution": "2560x1440"
+  },
+  "S10d-arabic-phone": {
+    "speed": 1.0,
+    "source": 4,
+    "out": 4.0,
+    "resolution": "780x1688"
+  }
+}
